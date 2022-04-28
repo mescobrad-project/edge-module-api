@@ -1,0 +1,422 @@
+---
+swagger: "2.0"
+info:
+  description: "List of APIs exposed by the edge module to interacts with workflows\
+    \ and to manage installed plugins."
+  version: "1.0.0"
+  title: "MES-CoBraD Edge module API"
+host: "localhost:8080"
+basePath: "/api/v1"
+schemes:
+- "https"
+- "http"
+paths:
+  /workflows:
+    get:
+      tags:
+      - "Workflows"
+      summary: "Get list of defined workflows"
+      description: "This API allows to get the list of workflows that have been defined\
+        \ within the edge module."
+      operationId: "get_workflows"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "limit"
+        in: "query"
+        description: "Number of entities to return"
+        required: true
+        type: "integer"
+        default: 20
+      - name: "offset"
+        in: "query"
+        description: "Number of entities to skip"
+        required: true
+        type: "integer"
+        default: 0
+      security:
+      - api_key: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            allOf:
+            - properties:
+                count:
+                  type: "integer"
+                total_count:
+                  type: "integer"
+                data:
+                  type: "array"
+                  items:
+                    $ref: "#/definitions/Workflow"
+            - {}
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "swagger_server.controllers.workflows_controller"
+    post:
+      tags:
+      - "Workflows"
+      summary: "Create a new workflow"
+      description: "This API allows to define a new workflow by specifying an ordered\
+        \ list of operations. Such operations are made available by the installed\
+        \ plugins within the edge module."
+      operationId: "add_workflow"
+      consumes:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Workflow definition"
+        required: true
+        schema:
+          $ref: "#/definitions/Workflow"
+      security:
+      - api_key: []
+      responses:
+        "201":
+          description: "Created"
+        "405":
+          description: "Invalid Input"
+        "409":
+          description: "Workflow already exists"
+      x-swagger-router-controller: "swagger_server.controllers.workflows_controller"
+  /workflows/{workflow_id}:
+    get:
+      tags:
+      - "Workflows"
+      summary: "Get workflow by ID"
+      description: "This API allows to get a defined workflow by specifying its ID"
+      operationId: "get_workflow_by_id"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "workflow_id"
+        in: "path"
+        description: "The workflow ID"
+        required: true
+        type: "string"
+      security:
+      - api_key: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Workflow"
+        "400":
+          description: "Invalid workflow ID"
+        "404":
+          description: "Workflow not found"
+      x-swagger-router-controller: "swagger_server.controllers.workflows_controller"
+    delete:
+      tags:
+      - "Workflows"
+      summary: "Delete workflow by ID"
+      description: "This API allows to delete a defined workflow by specifying its\
+        \ ID"
+      operationId: "delete_workflow_by_id"
+      parameters:
+      - name: "workflow_id"
+        in: "path"
+        description: "The workflow ID"
+        required: true
+        type: "string"
+      security:
+      - api_key: []
+      responses:
+        "204":
+          description: "successful operation"
+        "400":
+          description: "Invalid workflow ID"
+        "404":
+          description: "Workflow not found"
+      x-swagger-router-controller: "swagger_server.controllers.workflows_controller"
+  /workflows/{workflow_id}/run:
+    post:
+      tags:
+      - "Workflows"
+      summary: "Run a workflow"
+      description: "This API allows to run a defined workflow by specifying its ID"
+      operationId: "run_workflow_id"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "workflow_id"
+        in: "path"
+        description: "The workflow ID"
+        required: true
+        type: "string"
+      security:
+      - api_key: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+        "400":
+          description: "Invalid workflow ID"
+        "404":
+          description: "Workflow not found"
+      x-swagger-router-controller: "swagger_server.controllers.workflows_controller"
+  /plugins:
+    get:
+      tags:
+      - "Plugins"
+      summary: "Get list of installed plugins"
+      description: "This API allows to get the list of plugins that have been installed\
+        \ within the edge module."
+      operationId: "get_plugins"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "limit"
+        in: "query"
+        description: "Number of entities to return"
+        required: true
+        type: "integer"
+        default: 20
+      - name: "offset"
+        in: "query"
+        description: "Number of entities to skip"
+        required: true
+        type: "integer"
+        default: 0
+      security:
+      - api_key: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Plugin"
+      x-swagger-router-controller: "swagger_server.controllers.plugins_controller"
+    post:
+      tags:
+      - "Plugins"
+      summary: "Install plugin"
+      description: "This API allows to install a plugin within the edge module"
+      operationId: "install_plugin"
+      consumes:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Plugin details"
+        required: true
+        schema:
+          $ref: "#/definitions/Plugin"
+      security:
+      - api_key: []
+      responses:
+        "200":
+          description: "successful operation"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "swagger_server.controllers.plugins_controller"
+  /plugins/{plugin_id}:
+    get:
+      tags:
+      - "Plugins"
+      summary: "Get installed plugin by ID"
+      description: "This API allows to get an installed plugin by specifying its ID"
+      operationId: "get_plugin_by_id"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "plugin_id"
+        in: "path"
+        description: "The plugin ID"
+        required: true
+        type: "string"
+      security:
+      - api_key: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Plugin"
+        "400":
+          description: "Invalid workflow ID"
+        "404":
+          description: "Plugin not found"
+      x-swagger-router-controller: "swagger_server.controllers.plugins_controller"
+    delete:
+      tags:
+      - "Plugins"
+      summary: "Uninstall plugin by ID"
+      description: "This API allows to uninstall a plugin by specifying its ID"
+      operationId: "delete_plugin_by_id"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "plugin_id"
+        in: "path"
+        description: "The plugin ID"
+        required: true
+        type: "string"
+      security:
+      - api_key: []
+      responses:
+        "202":
+          description: "successful operation"
+        "400":
+          description: "Invalid plugin ID"
+        "404":
+          description: "Plugin not found"
+      x-swagger-router-controller: "swagger_server.controllers.plugins_controller"
+  /plugins/{plugin_id}/config:
+    get:
+      tags:
+      - "Plugins"
+      summary: "Get installed plugin configuration by plugin ID"
+      description: "This API allows to get the configuration of an installed plugin\
+        \ by specifying its ID"
+      operationId: "get_plugin_config_by_id"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "plugin_id"
+        in: "path"
+        description: "The plugin ID"
+        required: true
+        type: "string"
+      security:
+      - api_key: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/PluginConfiguration"
+        "400":
+          description: "Invalid plugin ID"
+        "404":
+          description: "Plugin not found"
+      x-swagger-router-controller: "swagger_server.controllers.plugins_controller"
+    patch:
+      tags:
+      - "Plugins"
+      summary: "Update plugin configuration by plugin ID"
+      description: "This API allows to update the configuration of an installed plugin\
+        \ by specifying its ID"
+      operationId: "update_plugin_config_by_id"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "plugin_id"
+        in: "path"
+        description: "The plugin ID"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Plugin configuration"
+        required: true
+        schema:
+          properties:
+            field_id:
+              type: "string"
+              enum:
+              - "field_value"
+      security:
+      - api_key: []
+      responses:
+        "204":
+          description: "successful operation"
+        "400":
+          description: "Invalid plugin ID"
+        "404":
+          description: "Plugin not found"
+      x-swagger-router-controller: "swagger_server.controllers.plugins_controller"
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+    x-apikeyInfoFunc: "swagger_server.controllers.authorization_controller.check_api_key"
+definitions:
+  Operation:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      plugin_id:
+        type: "string"
+    example:
+      plugin_id: "plugin_id"
+      name: "name"
+      description: "description"
+      id: "id"
+  Plugin:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      type:
+        type: "string"
+      version:
+        type: "string"
+      url:
+        type: "string"
+    example:
+      name: "name"
+      description: "description"
+      id: "id"
+      type: "type"
+      version: "version"
+      url: "url"
+  PluginConfiguration:
+    type: "object"
+    properties:
+      plugin_id:
+        type: "string"
+      configuration:
+        type: "object"
+        properties:
+          conf_1:
+            type: "string"
+          conf_2:
+            type: "string"
+          conf_3:
+            type: "string"
+    example:
+      plugin_id: "plugin_id"
+      configuration: "{}"
+  Workflow:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      execution_interval:
+        type: "string"
+      last_run:
+        type: "string"
+      operations:
+        type: "array"
+        items:
+          $ref: "#/definitions/Operation"
+    example:
+      operations:
+      - plugin_id: "plugin_id"
+        name: "name"
+        description: "description"
+        id: "id"
+      - plugin_id: "plugin_id"
+        name: "name"
+        description: "description"
+        id: "id"
+      execution_interval: "execution_interval"
+      name: "name"
+      last_run: "last_run"
+      id: "id"
