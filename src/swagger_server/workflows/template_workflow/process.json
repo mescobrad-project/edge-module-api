@@ -1,0 +1,18 @@
+{
+    "id": "0",
+    "name": "template_workflow",
+    "operations": [
+      {
+        "id": "operation_id",
+        "name": "operation_name",
+        "description": "operation_description",
+        "plugin_id": "plugin_id"
+      },
+      {
+        "id": "operation_id",
+        "name": "operation_name",
+        "description": "operation_description",
+        "plugin_id": "plugin_id"
+      }
+    ]
+}
