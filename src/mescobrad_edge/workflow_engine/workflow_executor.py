@@ -57,10 +57,11 @@ def workflow_thread_func(workflow, run_info):
                 workflow_process_json = json.loads(workflow_process_file.read())
             
             for idx in range(len(workflow_process_json['run_info'])):
-                run_info = workflow_process_json['run_info'][idx]
-                if run_info['id'] == workflow.id:
-                    run_info['status'] = operation.id
-                    workflow_process_json['run_info'][idx] = run_info
+                run_info_json = workflow_process_json['run_info'][idx]
+                if str(run_info_json['id']) == str(run_info.id):
+                    run_info_json['status'] = operation.id
+                    workflow_process_json['run_info'][idx] = run_info_json
+                    break
 
             with open(f"{workflow_path}/.run", 'w') as workflow_process_file:
                 workflow_process_file.write(json.dumps(workflow_process_json))
