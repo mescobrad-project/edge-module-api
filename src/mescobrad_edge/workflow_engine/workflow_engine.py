@@ -26,6 +26,7 @@ class WorkflowEngine():
                 # Save run info
                 self.__loader__.save_run_info(workflow_id=workflow_id, run_info=workflow_run_info)
 
+                workflow_process.start()
                 # Make it sync
                 # workflow_process.join()
 

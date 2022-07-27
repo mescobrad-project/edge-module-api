@@ -10,7 +10,7 @@ from mescobrad_edge.workflow_engine.models.executor import Executor
 from mescobrad_edge.models.workflow_run import WorkflowRun
 
 from mescobrad_edge.singleton import ROOT_DIR, PLUGIN_FOLDER_PATH as PLUGIN_FOLDER
-from mescobrad_edge.workflow_engine.workflow_singleton import WORKFLOW_FOLDER_PATH as WORKFLOW_FOLDER, workflow_mutexes
+from mescobrad_edge.workflow_engine.workflow_singleton import WORKFLOW_FOLDER_PATH as WORKFLOW_FOLDER, get_mutex_from_workflow_id
 
 class WorkflowThread():
 
@@ -36,7 +36,7 @@ class WorkflowThread():
         # Dynamically load entrypoint
         print(f"Loading {plugin_entry_point} (entrypoint) for plugin {plugin_id} located at {plugin_path}")
         plugin_instance = self.__get_plugin_instance__(plugin_path, plugin_entry_point)
-        workflow_mutex = self.__get_workflow_mutex__()
+        workflow_mutex = get_mutex_from_workflow_id(self.__workflow__.id)
 
         # Update workflow run file
         with workflow_mutex:
@@ -69,15 +69,6 @@ class WorkflowThread():
         spec.loader.exec_module(plugin)
         return plugin.GenericPlugin()
     
-    def __get_workflow_mutex__(self):
-        # Get workflow mutex (if not exist create it)
-        if self.__workflow__.id in workflow_mutexes.keys():
-            workflow_mutex = workflow_mutexes[self.__workflow__.id]
-        else:
-            workflow_mutex = Lock()
-            workflow_mutexes[self.__workflow__.id] = workflow_mutex
-        return workflow_mutex
-    
     def __open_workflow_run_file__(self, workflow_path, mode, func):
         # if mode = 'w' return None, otherwise return the content of the file
         content = None
@@ -101,7 +92,6 @@ class WorkflowDefaultExecutor(Executor):
         run_info = WorkflowRun(id=uuid.uuid4(), ts=datetime.now().strftime("%m/%d/%Y %H:%M:%S"), status='CREATED')
         
         # Create a new thread
-        p = Thread(target=WorkflowThread(workflow, run_info).run(), args=(workflow, run_info))
-        p.start()
+        p = Thread(target=WorkflowThread(workflow, run_info).run)
 
         return p, run_info
