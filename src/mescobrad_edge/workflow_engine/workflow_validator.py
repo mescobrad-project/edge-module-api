@@ -1,7 +1,8 @@
 import os
 import json
 
-WORKFLOW_DIR = "mescobrad_edge/workflows"
+from mescobrad_edge.singleton import ROOT_DIR
+from mescobrad_edge.workflow_engine.workflow_singleton import WORKFLOW_FOLDER_PATH as WORKFLOW_FOLDER
 
 class WorkflowValidator():
     def validate(self, workflow_id):
@@ -11,16 +12,16 @@ class WorkflowValidator():
         run_file = None
         config_file = None
         
-        with open(f"{WORKFLOW_DIR}/{workflow_id}/process.json", 'r') as p:
+        with open(f"{ROOT_DIR}/{WORKFLOW_FOLDER}/{workflow_id}/process.json", 'r') as p:
             process_file = p.read()
 
-        with open(f"{WORKFLOW_DIR}/{workflow_id}/.run", 'r') as r:
+        with open(f"{ROOT_DIR}/{WORKFLOW_FOLDER}/{workflow_id}/.run", 'r') as r:
             run_file = r.read()
 
-        if not os.path.isdir(f"{WORKFLOW_DIR}/{workflow_id}/.config"):
+        if not os.path.isdir(f"{ROOT_DIR}/{WORKFLOW_FOLDER}/{workflow_id}/.config"):
             return False
 
-        with open(f"{WORKFLOW_DIR}/{workflow_id}/.config/workflow.config", 'r') as c:
+        with open(f"{ROOT_DIR}/{WORKFLOW_FOLDER}/{workflow_id}/.config/workflow.config", 'r') as c:
             config_file = c.read()
 
         return self.__validate_process__(json.loads(process_file)) and \

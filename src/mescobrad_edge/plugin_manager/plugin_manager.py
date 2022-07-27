@@ -12,11 +12,11 @@ plugin_list_mutex = Lock()
 
 class PluginManager():
 
-    def __init__(self, plugin_folder_path, plugin_downloader, plugin_validation_func, plugin_conf_func) -> None:
+    def __init__(self, plugin_folder, plugin_downloader, plugin_validation_func, plugin_conf_func) -> None:
         # Set plugin_list config
         self.plugin_list_path = PLUGIN_LIST_PATH
         # Set plugin folder path
-        self.plugin_folder_path = plugin_folder_path
+        self.plugin_folder_path = f"{plugin_folder}/"
         # Set plugin validation function
         self.plugin_validation_func = plugin_validation_func
         # Set plugin configuration function

@@ -6,10 +6,10 @@ import time
 import mescobrad_edge.singleton as singleton
 
 class PluginHandler(watchdog.events.PatternMatchingEventHandler):
-    def __init__(self, plugin_folder_path):
+    def __init__(self, plugin_folder):
         # Set the patterns for PatternMatchingEventHandler
         watchdog.events.PatternMatchingEventHandler.__init__(self, ignore_directories=False, case_sensitive=False)
-        self.plugin_folder_path = plugin_folder_path
+        self.plugin_folder_path = f"{plugin_folder}/"
 
     def on_created(self, event):
         if event.is_directory:
@@ -29,13 +29,13 @@ class PluginHandler(watchdog.events.PatternMatchingEventHandler):
                     continue
 
             logging.info("New folder detected - % s" % event.src_path)
-            plugin_id = event.src_path.replace(singleton.ROOT_DIR + '/' + self.plugin_folder_path, '', 1).split('/')[0]
+            plugin_id = event.src_path.replace(f"{singleton.ROOT_DIR}/{self.plugin_folder_path}", '', 1).split('/')[0]
             logging.info("Checking if %s is a valid plugin" % plugin_id)
             singleton.plugin_manager.install_plugin(plugin_id)
 
     def on_deleted(self, event):
         if event.is_directory:
             logging.info("Watchdog received deleted folder - % s" % event.src_path)
-            plugin_id = event.src_path.replace(singleton.ROOT_DIR + '/' + self.plugin_folder_path, '', 1).split('/')[0]
+            plugin_id = event.src_path.replace(f"{singleton.ROOT_DIR}/{self.plugin_folder_path}", '', 1).split('/')[0]
             logging.info("checking if %s was a valid plugin" % plugin_id)
             singleton.plugin_manager.uninstall_plugin(plugin_id)

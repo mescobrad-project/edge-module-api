@@ -22,9 +22,9 @@ def __init_observer__(plugin_folder_path):
     # Init observer
     observer = watchdog.observers.Observer()
     # Init scheduler
-    observer.schedule(event_handler, path=singleton.ROOT_DIR + '/' + plugin_folder_path, recursive=False)
+    observer.schedule(event_handler, path=f"{singleton.ROOT_DIR}/{plugin_folder_path}/", recursive=False)
     # Start observing
-    logging.info("Starting watching folder {} for new plugins".format(singleton.ROOT_DIR + '/' + plugin_folder_path))
+    logging.info("Starting watching folder {} for new plugins".format(singleton.ROOT_DIR + '/' + plugin_folder_path + '/'))
     observer.start()
 
 

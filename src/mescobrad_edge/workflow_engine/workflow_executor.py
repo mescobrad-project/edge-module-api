@@ -9,8 +9,8 @@ from threading import Thread, Lock
 from mescobrad_edge.workflow_engine.models.executor import Executor
 from mescobrad_edge.models.workflow_run import WorkflowRun
 
-PLUGIN_FOLDER = 'mescobrad_edge/plugins'
-WORKFLOW_FOLDER = 'mescobrad_edge/workflows'
+from mescobrad_edge.singleton import ROOT_DIR, PLUGIN_FOLDER_PATH as PLUGIN_FOLDER
+from mescobrad_edge.workflow_engine.workflow_singleton import WORKFLOW_FOLDER_PATH as WORKFLOW_FOLDER
 
 workflow_mutexes = {}
 
@@ -24,7 +24,7 @@ def workflow_thread_func(workflow, run_info):
         print(f"Starting operation {operation.id} with name {operation.name}")
 
         plugin_id = operation.plugin_id
-        plugin_path = f"{PLUGIN_FOLDER}/{plugin_id}".replace('-','_')
+        plugin_path = f"{ROOT_DIR}/{PLUGIN_FOLDER}/{plugin_id.replace('-','_')}"
 
         # Read entrypoint file name
         with open(f"{plugin_path}/plugin.info.json", 'r') as plugin_info_file:
@@ -51,7 +51,7 @@ def workflow_thread_func(workflow, run_info):
         # Update workflow run file
         with workflow_mutex:
             # Read entrypoint file name
-            workflow_path = f"{WORKFLOW_FOLDER}/{workflow.name}".replace('-','_')
+            workflow_path = f"{ROOT_DIR}/{WORKFLOW_FOLDER}/{(workflow.name).replace('-','_')}"
             workflow_process_json = None
             with open(f"{workflow_path}/.run", 'r') as workflow_process_file:
                 workflow_process_json = json.loads(workflow_process_file.read())
