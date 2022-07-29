@@ -22,13 +22,13 @@ class WorkflowEngine():
                 # Load workflow from file system and deserialize it
                 workflow = self.__serde__.deserialize(self.__loader__.load_workflow(workflow_id=workflow_id))
                 # Execute workflow
-                workflow_process, workflow_run_info = self.__executor__.run(workflow)
+                workflow_thread, workflow_run_info = self.__executor__.run(workflow)
                 # Save run info
                 self.__loader__.save_run_info(workflow_id=workflow_id, run_info=workflow_run_info)
 
-                workflow_process.start()
+                workflow_thread.start()
                 # Make it sync
-                # workflow_process.join()
+                # workflow_thread.join()
 
                 return workflow_run_info.id
             else:
