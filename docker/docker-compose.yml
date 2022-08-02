@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  mescobrad_edge:
+    image: mescobrad_edge:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - /usr/src/app/mescobrad_edge/plugins
+      - /usr/src/app/mescobrad_edge/workflows
