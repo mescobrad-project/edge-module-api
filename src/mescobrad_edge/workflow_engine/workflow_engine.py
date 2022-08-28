@@ -1,8 +1,14 @@
+from typing import Dict
 from mescobrad_edge.workflow_engine.workflow_serde import WorkflowDefaultSerde
 
 from mescobrad_edge.workflow_engine.workflow_validator import WorkflowValidator
 from mescobrad_edge.workflow_engine.workflow_loader import WorkflowDefaultLoader
 from mescobrad_edge.workflow_engine.workflow_executor import WorkflowDefaultExecutor
+
+import os
+import json
+from mescobrad_edge.singleton import ROOT_DIR
+from mescobrad_edge.workflow_engine.workflow_singleton import WORKFLOW_FOLDER_PATH
 
 class WorkflowEngine():
 
@@ -36,9 +42,39 @@ class WorkflowEngine():
         else:
             print(f"Workflow {workflow_id} does not exist on this system")
         return None
-    
+
     def __check_workflow__(self, workflow_id: str) -> bool:
         return self.__loader__.check_if_present(workflow_id)
 
     def __validate_workflow__(self, workflow_id: str) -> bool:
         return self.__validator__.validate(workflow_id)
+
+    def get_existent_workflows(self):
+        """Returns list of existent workflow folders"""
+        existent_workflow_folders = [ '/'.join(f.path.split(WORKFLOW_FOLDER_PATH)[1:]) for f in os.scandir(ROOT_DIR + '/' + WORKFLOW_FOLDER_PATH) if f.is_dir() ]
+        return existent_workflow_folders
+
+    def list_workflows(self):
+        """List existing workflows"""
+        workflows_list = {}
+        # List folder within workflows folder
+        WORKFLOW_INFO_FILE = "process.json"
+        existent_workflow_folders =self.get_existent_workflows()
+        for workflow in existent_workflow_folders:
+            workflow_info = {}
+            with open(f"{ROOT_DIR}/{WORKFLOW_FOLDER_PATH}{workflow}" + "/" + WORKFLOW_INFO_FILE, 'r') as workflow_info_file:
+                workflow_info = json.load(workflow_info_file)
+                workflows_list[workflow] = workflow_info
+        return workflows_list
+
+    def get_workflow_info(self, workflow_id):
+        """For specified workflow_id returns informations about workflow"""
+        WORKFLOW_INFO_FILE = "process.json"
+        existent_workflow_folders = self.get_existent_workflows()
+        workflow_info = None
+        for workflow in existent_workflow_folders:
+            with open(f"{ROOT_DIR}/{WORKFLOW_FOLDER_PATH}{workflow}" + "/" + WORKFLOW_INFO_FILE, 'r') as workflow_info_file:
+                workflow_current_info = json.load(workflow_info_file)
+                if workflow_current_info["id"] == workflow_id:
+                    workflow_info = workflow_current_info
+        return workflow_info

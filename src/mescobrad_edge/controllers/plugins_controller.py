@@ -35,7 +35,7 @@ def get_plugin_by_id(plugin_id):  # noqa: E501
     :rtype: Plugin
     """
     plugin_info = singleton.plugin_manager.get_plugin_info(plugin_id)
-    
+
     return (Plugin.from_dict(plugin_info), 200) if plugin_info is not None else (None, 404)
 
 
