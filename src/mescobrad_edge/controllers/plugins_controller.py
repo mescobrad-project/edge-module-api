@@ -66,7 +66,7 @@ def get_plugins(limit, offset):  # noqa: E501
     """
 
     plugin_raw_list = singleton.plugin_manager.list_plugins()
-    return [Plugin.from_dict(p) for p in plugin_raw_list.values()][offset:limit], 200
+    return [Plugin.from_dict(p) for p in plugin_raw_list.values()][offset:offset+limit], 200
 
 
 def install_plugin(body):  # noqa: E501
