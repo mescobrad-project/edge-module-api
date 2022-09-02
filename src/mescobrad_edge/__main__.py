@@ -17,6 +17,9 @@ from mescobrad_edge import encoder
 
 import mescobrad_edge.singleton as singleton
 
+from flask_cors import CORS
+
+
 def __init_observer__(plugin_folder_path):
     event_handler = PluginHandler(plugin_folder_path)
     # Init observer
@@ -30,6 +33,7 @@ def __init_observer__(plugin_folder_path):
 
 def main():
     app = connexion.App(__name__, specification_dir='./swagger/')
+    CORS(app.app)
     app.app.json_encoder = encoder.JSONEncoder
     app.add_api('swagger.yaml', arguments={'title': 'MES-CoBraD Edge module API'}, pythonic_params=True)
 
@@ -37,7 +41,7 @@ def main():
     singleton.plugin_manager = PluginManager(singleton.PLUGIN_FOLDER_PATH, plugin_downloader, default_validator, None)
     __init_observer__(singleton.PLUGIN_FOLDER_PATH)
 
-    app.run(port=8080)
+    app.run(port=8080, host='0.0.0.0')
 
 
 
