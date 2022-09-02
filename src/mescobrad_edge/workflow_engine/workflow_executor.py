@@ -41,7 +41,7 @@ class WorkflowThread():
         # Update workflow run file
         with workflow_mutex:
             # Read entrypoint file name
-            workflow_path = f"{ROOT_DIR}/{WORKFLOW_FOLDER}/{(self.__workflow__.name).replace('-','_')}"
+            workflow_path = f"{ROOT_DIR}/{WORKFLOW_FOLDER}/{(self.__workflow__.id).replace('-','_')}"
             workflow_process_json = self.__open_workflow_run_file__(workflow_path, 'r', lambda file_content: json.loads(file_content.read()))
             workflow_process_json = self.__overwrite_run_info_status__(workflow_process_json, operation)
 
