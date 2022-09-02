@@ -17,13 +17,13 @@ class WorkflowThread():
     def __init__(self, workflow, run_info) -> None:
         self.__workflow__ = workflow
         self.__run_info__ = run_info
-    
+
     def run(self):
         print(f"Starting a new run for workflow {self.__workflow__.id} with id {self.__run_info__.id}")
-    
+
         exchange_info = None
         # Iterate over the operations
-        for operation in self.__workflow__.operations:        
+        for operation in self.__workflow__.operations:
             exchange_info = self.__run_operation__(operation, exchange_info)
         return 0
 
@@ -58,7 +58,7 @@ class WorkflowThread():
         with open(f"{plugin_path}/plugin.info.json", 'r') as plugin_info_file:
             plugin_info_json = json.loads(plugin_info_file.read())
             entry_point = plugin_info_json["entry-point"]
-    
+
         return entry_point
 
     def __get_plugin_instance__(self, plugin_path, entry_point):
@@ -68,13 +68,15 @@ class WorkflowThread():
         sys.modules[entry_point] = plugin
         spec.loader.exec_module(plugin)
         return plugin.GenericPlugin()
-    
+
     def __open_workflow_run_file__(self, workflow_path, mode, func):
         # if mode = 'w' return None, otherwise return the content of the file
-        content = None
         with open(f"{workflow_path}/.run", mode) as workflow_process_file:
                 content = func(workflow_process_file)
-        return content
+        if mode == 'w':
+            return None
+        else:
+            return content
 
     def __overwrite_run_info_status__(self, workflow_process_json, operation):
         for idx in range(len(workflow_process_json['run_info'])):
@@ -90,7 +92,7 @@ class WorkflowThread():
 class WorkflowDefaultExecutor(Executor):
     def run(self, workflow):
         run_info = WorkflowRun(id=uuid.uuid4(), ts=datetime.now().strftime("%m/%d/%Y %H:%M:%S"), status='CREATED')
-        
+
         # Create a new thread
         p = Thread(target=WorkflowThread(workflow, run_info).run)
 
