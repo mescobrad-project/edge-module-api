@@ -43,7 +43,6 @@ def add_workflow(body):  # noqa: E501
 
     # Path
     path = os.path.join(parent_dir, directory)
-    print(path)
 
     # Create the directory
     os.mkdir(path)
@@ -155,7 +154,7 @@ def run_workflow_id(workflow_id):  # noqa: E501
 
 
 def is_empty_string(body):
-    """Check if variables in workflow input are empty."""
+    """Check if fields in workflow input are empty."""
     if not body.id.strip() or not body.name.strip() or not body.operations:
         return True
     else:
@@ -168,7 +167,7 @@ def is_present_plugin_id(body):
 
 
 def check_workflow_input(body):
-    """Check in input for creating workflow is correct"""
+    """Check if input for creating workflow is correct"""
     if not is_empty_string(body) and \
         is_present_plugin_id(body):
         return True
