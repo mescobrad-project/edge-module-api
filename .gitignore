@@ -11,6 +11,11 @@ local.properties
 .loadpath
 .recommenders
 
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
 # External tool builders
 .externalToolBuilders/
 

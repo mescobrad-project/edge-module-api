@@ -1,15 +1,13 @@
-# Project Title
+# Edge Module API
 
 Choose and leave only one of the following badge
 
 ![REPO-TYPE](https://img.shields.io/badge/repo--type-backend-critical?style=for-the-badge&logo=github)
-![REPO-TYPE](https://img.shields.io/badge/repo--type-frontend-green?style=for-the-badge&logo=github)
-![REPO-TYPE](https://img.shields.io/badge/repo--type-automation-9cf?style=for-the-badge&logo=github)
 
 
-One Paragraph of project description goes here.
+This repository contains the backend of the edge-module. It's intended to be deployed locally at the edge of the MES-CoBraD platform.
 
-More detailed infos here.
+Such set of APIs allows the communications between the Edge module UI (Deployed within the MES-CoBraD platform) and the edge module functionalities. 
 
 ## Getting Started
 
@@ -17,58 +15,43 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
+- Python 3.7
+- Git
 
 ### Installing
 
 A step by step series of examples that tell you how to get a development env running
 
-Say what the step will be
+Install docker on you dev machine
 
 ```
-Give the example
+https://docs.docker.com/get-docker/
 ```
 
-And repeat
+Run the following command to initializate a Python 3.7 environment
 
 ```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
+docker run --name python-dev --env-file dev.env -v "$(pwd)/src:/usr/src/" -d python:3.7-slim tail -f /dev/null && docker exec -it python-dev /bin/sh
 
 ```
-Give an example
+
+Install Git
+```
+apt-get update
+apt-get install git
+
 ```
 
-### And coding style tests
-
-Explain what these tests test and why
+Install Dependencies
+```
+pip3 install --no-cache-dir -r requirements.txt
 
 ```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
 
 ## Built With
 
-* [SpringBoot](http://springboot.io) - The Java framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
+* [Connexion](https://connexion.readthedocs.io/en/latest/) - a framework built on top of Flask that automagically handles HTTP requests based on OpenAPI Specification
+* [Pip](https://pip.pypa.io/en/stable/) - Dependency Management
 
 ## Contributing
 
@@ -80,16 +63,6 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Name Surname** - *Role* - [githubnickname](github_profile_url)
+* **Danilo Trombino** - *SW & Data Engineer* - [trowdan](https://github.com/trowdan)
 
 See also the list of [contributors](contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
