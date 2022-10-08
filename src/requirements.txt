@@ -5,5 +5,7 @@ setuptools >= 21.0.0
 swagger-ui-bundle >= 0.0.2
 watchdog
 gitpython
-git
 flask-cors
+pandas
+boto3>=1.21.32
+virtualenv
