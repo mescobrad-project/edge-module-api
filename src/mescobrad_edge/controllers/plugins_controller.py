@@ -107,25 +107,26 @@ def upload_questionnaires_data(upload_file, trigger_anonymization):  # noqa: E50
     """
 
     from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
+    import configparser
 
     # Check if data is csv file
     if not upload_file.filename.endswith('.csv'):
         return None, 405
 
     # Init client
-    endpoint_url = ""
-    access_id = ""
-    secret_access_key = ""
-    region_name = "us-east-1"
-    obj_storage_bucket = ""
+    CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
+    PLUGIN_CONF_MAIN_SECTION = 'edge-module-configuration'
+    config = configparser.ConfigParser()
+    config.read(CONF_FILE_PATH)
     s3 = boto3.resource('s3',
-                        endpoint_url=endpoint_url,
-                        aws_access_key_id=access_id,
-                        aws_secret_access_key=secret_access_key,
+                        endpoint_url=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_URL_LOCAL"],
+                        aws_access_key_id=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_ACCESS_ID_LOCAL"],
+                        aws_secret_access_key=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_ACCESS_SECRET_LOCAL"],
                         config=Config(signature_version='s3v4'),
-                        region_name=region_name)
+                        region_name=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_REGION"])
 
     # Upload data
+    obj_storage_bucket = config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_BUCKET_LOCAL"]
     if s3.Bucket(obj_storage_bucket).creation_date is None:
             s3.create_bucket(Bucket=obj_storage_bucket)
     file_name = upload_file.filename
