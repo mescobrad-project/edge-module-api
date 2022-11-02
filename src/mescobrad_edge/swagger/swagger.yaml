@@ -329,6 +329,34 @@ paths:
         "404":
           description: "Plugin not found"
       x-swagger-router-controller: "mescobrad_edge.controllers.plugins_controller"
+  /plugins/data_upload:
+    post:
+      tags:
+      - "Plugins"
+      summary: "Upload questionnaires data"
+      description: "This API allows to upload questionnaires data."
+      operationId: "upload_questionnaires_data"
+      consumes:
+      - "multipart/form-data"
+      parameters:
+      - name: "upload_file"
+        in: "formData"
+        type: "file"
+        description: "The file to upload"
+        required: true
+      - name: "trigger_anonymization"
+        in: "query"
+        description: "Trigger anonymization workflow"
+        required: true
+        type: "boolean"
+      security:
+      - api_key: []
+      responses:
+        "200":
+          description: "Successful operation"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "mescobrad_edge.controllers.plugins_controller"
 securityDefinitions:
   api_key:
     type: "apiKey"

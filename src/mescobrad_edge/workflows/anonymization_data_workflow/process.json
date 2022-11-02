@@ -1,0 +1,24 @@
+{
+    "id": "anonymization_data_workflow",
+    "name": "anonymization_data_workflow",
+    "operations": [
+      {
+        "id": "download_input_data",
+        "name": "Download data to anonymize",
+        "description": "First operation is to download data for perfoming anonymization",
+        "plugin_id": "edge_plugin_download"
+      },
+      {
+        "id": "anonymize_data",
+        "name": "Final processing operation",
+        "description": "Operation to perform anonyimizing data",
+        "plugin_id": "edge_plugin_anonymize"
+      },
+      {
+        "id": "upload_anonymized_data",
+        "name": "upload_anonymized_data_on_minio",
+        "description": "Upload anonymized destination file on minio",
+        "plugin_id": "edge_plugin_upload"
+      }
+    ]
+}

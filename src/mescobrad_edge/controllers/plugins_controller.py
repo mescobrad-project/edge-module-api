@@ -7,6 +7,12 @@ from mescobrad_edge import util
 
 import mescobrad_edge.singleton as singleton
 
+import boto3
+from botocore.client import Config
+from io import BytesIO
+import datetime
+
+
 def delete_plugin_by_id(plugin_id):  # noqa: E501
     """Uninstall plugin by ID
 
@@ -85,6 +91,56 @@ def install_plugin(body):  # noqa: E501
         return (None, 200) if success else (None, 400)
     else:
         return None, 405
+
+
+def upload_questionnaires_data(upload_file, trigger_anonymization):  # noqa: E501
+    """Upload questionnaires data
+
+    This API allows to upload questionnaires data. # noqa: E501
+
+    :param upload_file: The file to upload
+    :type upload_file: werkzeug.datastructures.FileStorage
+    :param trigger_anonymization: Trigger anonymization workflow
+    :type trigger_anonymization: bool
+
+    :rtype: None
+    """
+
+    from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
+    import configparser
+
+    # Check if data is csv file
+    if not upload_file.filename.endswith('.csv'):
+        return None, 405
+
+    # Init client
+    CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
+    PLUGIN_CONF_MAIN_SECTION = 'edge-module-configuration'
+    config = configparser.ConfigParser()
+    config.read(CONF_FILE_PATH)
+    s3 = boto3.resource('s3',
+                        endpoint_url=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_URL_LOCAL"],
+                        aws_access_key_id=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_ACCESS_ID_LOCAL"],
+                        aws_secret_access_key=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_ACCESS_SECRET_LOCAL"],
+                        config=Config(signature_version='s3v4'),
+                        region_name=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_REGION"])
+
+    # Upload data
+    obj_storage_bucket = config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_BUCKET_LOCAL"]
+    if s3.Bucket(obj_storage_bucket).creation_date is None:
+            s3.create_bucket(Bucket=obj_storage_bucket)
+    file_name = upload_file.filename
+    obj_name = "personal_data/" + file_name
+    file_content = upload_file.read()
+    s3.Bucket(obj_storage_bucket).upload_fileobj(BytesIO(file_content), obj_name, ExtraArgs={'ContentType': "text/csv"})
+
+    # start anonymization workflow
+    if trigger_anonymization:
+        workflow_engine_singleton = WorkflowEngine()
+        workflow_id = "anonymization_data_workflow"
+        print(f"Request received.. executing workflow {workflow_id}")
+        workflow_engine_singleton.execute_workflow(workflow_id=workflow_id)
+    return None, 200
 
 
 def update_plugin_config_by_id(plugin_id, body):  # noqa: E501
