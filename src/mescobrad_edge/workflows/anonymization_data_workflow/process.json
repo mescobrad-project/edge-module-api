@@ -12,7 +12,7 @@
         "id": "anonymize_data",
         "name": "Final processing operation",
         "description": "Operation to perform anonyimizing data",
-        "plugin_id": "edge_plugin_anonymize"
+        "plugin_id": "edge_plugin_anonymize_questionnaire"
       },
       {
         "id": "upload_anonymized_data",
