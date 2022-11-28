@@ -357,6 +357,41 @@ paths:
         "405":
           description: "Invalid input"
       x-swagger-router-controller: "mescobrad_edge.controllers.plugins_controller"
+  /plugins/mri_data_upload:
+    post:
+      tags:
+      - "Plugins"
+      summary: "Upload MRI data"
+      description: "This API allows to upload MRI data."
+      operationId: "upload_mri_data"
+      consumes:
+      - "multipart/form-data"
+      parameters:
+      - name: "upload_mri_file"
+        in: "formData"
+        type: "file"
+        description: "The MRI file to upload"
+        required: true
+      - name: "deface_method"
+        in: "query"
+        description: "Choose freesurfer or deface (FSL deface) option."
+        enum: ["freesurfer"]
+        default: "freesurfer"
+        required: true
+        type: string
+      - name: "trigger_anonymization"
+        in: "query"
+        description: "Trigger MRI anonymization workflow"
+        required: true
+        type: "boolean"
+      security:
+      - api_key: []
+      responses:
+        "200":
+          description: "Successful operation"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "mescobrad_edge.controllers.plugins_controller"
 securityDefinitions:
   api_key:
     type: "apiKey"
