@@ -9,3 +9,6 @@ flask-cors
 pandas
 boto3>=1.21.32
 virtualenv
+pydicom
+nibabel
+numpy

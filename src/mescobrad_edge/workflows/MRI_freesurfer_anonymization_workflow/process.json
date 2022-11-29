@@ -1,0 +1,12 @@
+{
+    "id": "MRI_freesurfer_anonymization_workflow",
+    "name": "MRI_freesurfer_anonymization_workflow",
+    "operations": [
+      {
+        "id": "mri_freesurfer_data_anonymize",
+        "name": "MRI anonymization",
+        "description": "Anonynimize MRI metadata and deface MRI files",
+        "plugin_id": "mri_anonymisation_plugin"
+      }
+    ]
+}
