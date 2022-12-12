@@ -17,7 +17,6 @@ class GitHubDownloader(PluginDownloader):
         return parsed_uri.netloc == self.VALID_URL
 
     def download(self, url, destination):
-
         if self.validate_url(url):
             # If folder already exists, remove in order to download the newest version.
             if os.path.exists(destination):

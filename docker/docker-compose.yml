@@ -1,13 +1,14 @@
 version: "3.9"
 services:
   mescobrad_edge:
-    image: mescobrad-edge
+    image: mescobrad-edge-v2
     restart: always
     ports:
       - "8080:8080"
     volumes:
-      - /usr/src/app/mescobrad_edge/plugins
-      - /usr/src/app/mescobrad_edge/workflows
+      - plugins:/usr/src/app/mescobrad_edge/plugins
+      - workflows:/usr/src/app/mescobrad_edge/workflows
+      - edge_module_config:/usr/src/mescobrad_edge/edge_module.config
     environment:
       - PYTHONUNBUFFERED=1
 
@@ -25,3 +26,6 @@ services:
 
 volumes:
   minio_storage: {}
+  plugins: {}
+  workflows: {}
+  edge_module_config: {}
