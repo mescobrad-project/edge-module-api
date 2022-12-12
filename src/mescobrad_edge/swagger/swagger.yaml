@@ -204,9 +204,13 @@ paths:
       - in: "body"
         name: "body"
         description: "Plugin details"
-        required: true
         schema:
-          $ref: "#/definitions/Plugin"
+          type: object
+          required:
+            - url
+          properties:
+            url:
+              type: string
       security:
       - api_key: []
       responses:

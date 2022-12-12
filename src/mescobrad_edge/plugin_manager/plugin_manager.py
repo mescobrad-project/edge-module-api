@@ -4,6 +4,7 @@ import json
 from threading import Lock
 import shutil
 from xmlrpc.client import Boolean
+import subprocess
 
 from mescobrad_edge.singleton import ROOT_DIR
 
@@ -36,9 +37,9 @@ class PluginManager():
 
         # List folders within plugin folder
         persisted_plugin_dict = [ '/'.join(f.path.split(self.plugin_folder_path)[1:]) for f in os.scandir(ROOT_DIR + '/' + self.plugin_folder_path) if f.is_dir() ]
-        
+
         logging.debug("Plugins in the local config file: {}".format(persisted_plugin_dict))
-        
+
         # For each plugin
         for plugin_id in persisted_plugin_dict:
             logging.info("Validating plugin {} ".format(plugin_id))
@@ -53,7 +54,7 @@ class PluginManager():
                 # If not, uninstall it
                 self.uninstall_plugin(plugin_id)
 
-        logging.info("Plugins correctly loaded: {}".format(list(in_memory_plugin_list.keys()))) 
+        logging.info("Plugins correctly loaded: {}".format(list(in_memory_plugin_list.keys())))
 
         return in_memory_plugin_list
 
@@ -83,6 +84,12 @@ class PluginManager():
             logging.error("Impossible to download plugin {} at url {}".format(plugin_id, plugin_repo))
             return False
 
+    def run_sh_scripts(self, plugin_id):
+        plugin_path = ROOT_DIR + "/" + self.plugin_folder_path + plugin_id
+        if "install_scripts" in os.listdir(plugin_path):
+            cmd = os.path.join(plugin_path, "install_scripts/install.sh")
+            subprocess.Popen("chmod +x " + cmd, shell=True, executable="/bin/bash").wait()
+            subprocess.Popen(cmd, shell=True, executable="/bin/bash").wait()
 
     def delete_plugin_folder(self, plugin_id) -> None:
         # Delete plugin folder recursively
@@ -93,6 +100,11 @@ class PluginManager():
         is_valid, plugin_info = self.__validate_plugin__(plugin_id)
         if is_valid:
             logging.info("{} is a valid plugin".format(plugin_id))
+            # run script for installation if there is install file
+            try:
+                self.run_sh_scripts(plugin_id)
+            except:
+                logging.error("Impossible to install plugin {}".format(plugin_id))
             # Update the plugin list file
             # Lock on general plugin list file
             with plugin_list_mutex:
@@ -110,5 +122,5 @@ class PluginManager():
     def uninstall_plugin(self, plugin_id) -> None:
         # Lock on general plugin list file
         with plugin_list_mutex:
-            self.plugin_list.pop(plugin_id, None)    
+            self.plugin_list.pop(plugin_id, None)
             self.__update_plugin_conf_file__()
