@@ -1,18 +1,19 @@
 version: "3.9"
 services:
   mescobrad_edge:
-    image: mescobrad-edge
+    image: registry.opsilab.eng.it/mescobrad-edge:0.0.2
     restart: always
     ports:
       - "8080:8080"
     volumes:
-      - /usr/src/app/mescobrad_edge/plugins
-      - /usr/src/app/mescobrad_edge/workflows
+      - plugins:/usr/src/app/mescobrad_edge/plugins
+      - workflows:/usr/src/app/mescobrad_edge/workflows
+      - edge_module_config:/usr/src/mescobrad_edge/edge_module.config
     environment:
       - PYTHONUNBUFFERED=1
 
   minio:
-    image: minio/minio
+    image: minio/minio:RELEASE.2021-09-15T04-54-25Z
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -25,3 +26,6 @@ services:
 
 volumes:
   minio_storage: {}
+  plugins: {}
+  workflows: {}
+  edge_module_config: {}

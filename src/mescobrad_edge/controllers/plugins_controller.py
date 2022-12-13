@@ -10,6 +10,7 @@ import mescobrad_edge.singleton as singleton
 import boto3
 from botocore.client import Config
 from io import BytesIO
+import os
 import datetime
 
 
@@ -87,7 +88,9 @@ def install_plugin(body):  # noqa: E501
     """
     if connexion.request.is_json:
         new_plugin = Plugin.from_dict(connexion.request.get_json())  # noqa: E501
-        success = singleton.plugin_manager.download_plugin(new_plugin.id, new_plugin.url)
+        # extract plugin_id from url
+        plugin_id = os.path.basename(new_plugin.url).split('.')[0]
+        success = singleton.plugin_manager.download_plugin(plugin_id, new_plugin.url)
         return (None, 200) if success else (None, 400)
     else:
         return None, 405
