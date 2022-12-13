@@ -8,7 +8,7 @@ services:
     volumes:
       - plugins:/usr/src/app/mescobrad_edge/plugins
       - workflows:/usr/src/app/mescobrad_edge/workflows
-      - edge_module_config:/usr/src/mescobrad_edge/edge_module.config
+      - ./edge_module.config:/usr/src/mescobrad_edge/edge_module.config
     environment:
       - PYTHONUNBUFFERED=1
 
@@ -28,4 +28,3 @@ volumes:
   minio_storage: {}
   plugins: {}
   workflows: {}
-  edge_module_config: {}
