@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   mescobrad_edge:
-    image: mescobrad-edge-v2
+    image: registry.opsilab.eng.it/mescobrad-edge:0.0.2
     restart: always
     ports:
       - "8080:8080"
