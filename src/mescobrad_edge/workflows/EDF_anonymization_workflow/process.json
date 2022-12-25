@@ -1,0 +1,12 @@
+{
+    "id": "EDF_anonymization_workflow",
+    "name": "EDF_anonymization_workflow",
+    "operations": [
+      {
+        "id": "edf_data_anonymize",
+        "name": "EDF_file_anonymization",
+        "description": "Anonymize data within edf files",
+        "plugin_id": "edf_anonymisation_plugin"
+      }
+    ]
+}
