@@ -396,6 +396,34 @@ paths:
         "405":
           description: "Invalid input"
       x-swagger-router-controller: "mescobrad_edge.controllers.plugins_controller"
+  /plugins/edf_data_upload:
+    post:
+      tags:
+      - "Plugins"
+      summary: "Upload edf file"
+      description: "This API allows to upload edf data"
+      operationId: "upload_edf_data"
+      consumes:
+      - "multipart/form-data"
+      parameters:
+      - name: "upload_edf_file"
+        in: "formData"
+        type: "file"
+        description: "The edf file to upload."
+        required: true
+      - name: "trigger_anonymization"
+        in: "query"
+        description: "Trigger edf anonymization workflow"
+        required: true
+        type: boolean
+      security:
+      - api_key: []
+      responses:
+        "202":
+          description: "Successfully accepted"
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "mescobrad_edge.controllers.plugins_controller"
 securityDefinitions:
   api_key:
     type: "apiKey"

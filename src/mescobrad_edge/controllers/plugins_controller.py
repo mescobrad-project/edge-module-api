@@ -201,6 +201,55 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization):  # n
     return None, 200
 
 
+def upload_edf_data(upload_edf_file, trigger_anonymization):  # noqa: E501
+    """Upload edf file
+
+    This API allows to upload edf data. # noqa: E501
+
+    :param upload_edf_file: The edf file to upload.
+    :type upload_edf_file: werkzeug.datastructures.FileStorage
+    :param trigger_anonymization: Trigger edf anonymization workflow
+    :type trigger_anonymization: bool
+
+    :rtype: None
+    """
+    from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
+    import configparser
+
+    # Check if data is edf file
+    if not upload_edf_file.filename.endswith('.edf'):
+        return None, 405
+
+    # Init client
+    CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
+    PLUGIN_CONF_MAIN_SECTION = 'edge-module-configuration'
+    config = configparser.ConfigParser()
+    config.read(CONF_FILE_PATH)
+    s3 = boto3.resource('s3',
+                        endpoint_url=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_URL_LOCAL"],
+                        aws_access_key_id=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_ACCESS_ID_LOCAL"],
+                        aws_secret_access_key=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_ACCESS_SECRET_LOCAL"],
+                        config=Config(signature_version='s3v4'),
+                        region_name=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_REGION"])
+
+    # Upload data
+    obj_storage_bucket = config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_BUCKET_LOCAL"]
+    if s3.Bucket(obj_storage_bucket).creation_date is None:
+            s3.create_bucket(Bucket=obj_storage_bucket)
+    file_name = upload_edf_file.filename
+    obj_name = "edf_data/" + file_name
+    file_content = upload_edf_file.read()
+    s3.Bucket(obj_storage_bucket).upload_fileobj(BytesIO(file_content), obj_name)
+
+    # start anonymization workflow
+    if trigger_anonymization:
+        workflow_id = "EDF_anonymization_workflow"
+        workflow_engine_singleton = WorkflowEngine()
+        print(f"Request received.. executing workflow {workflow_id}")
+        workflow_engine_singleton.execute_workflow(workflow_id=workflow_id)
+    return None, 202
+
+
 def update_plugin_config_by_id(plugin_id, body):  # noqa: E501
     """Update plugin configuration by plugin ID
 
