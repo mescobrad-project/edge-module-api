@@ -8,7 +8,7 @@ services:
     volumes:
       - plugins:/usr/src/app/mescobrad_edge/plugins
       - workflows:/usr/src/app/mescobrad_edge/workflows
-      - ./edge_module.config:/usr/src/mescobrad_edge/edge_module.config
+      - ./edge_module.config:/usr/src/app/mescobrad_edge/edge_module.config
     environment:
       - PYTHONUNBUFFERED=1
 
