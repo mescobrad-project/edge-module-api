@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   mescobrad_edge:
-    image: 237944624957.dkr.ecr.eu-south-1.amazonaws.com/mescobrad-edge:0.0.3
+    image: 237944624957.dkr.ecr.eu-south-1.amazonaws.com/mescobrad-edge:0.0.4
     restart: always
     ports:
       - "8080:8080"
