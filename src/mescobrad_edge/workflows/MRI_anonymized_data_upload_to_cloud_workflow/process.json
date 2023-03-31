@@ -1,0 +1,18 @@
+{
+    "id": "MRI_anonymized_data_upload_to_cloud_workflow",
+    "name": "MRI_anonymized_data_upload_to_cloud_workflow",
+    "operations": [
+      {
+        "id": "mri_freesurfer_data_anonymize",
+        "name": "MRI anonymization",
+        "description": "Anonynimize MRI metadata and deface MRI files",
+        "plugin_id": "mri_anonymisation_plugin"
+      },
+      {
+        "id": "mri_anonymized_data_upload_to_cloud",
+        "name": "MRI_anonymized_data_upload",
+        "description": "Upload defaced and anonymized MRI DICOM files to the cloud",
+        "plugin_id": "mri_upload_to_cloud_plugin"
+      }
+    ]
+}
