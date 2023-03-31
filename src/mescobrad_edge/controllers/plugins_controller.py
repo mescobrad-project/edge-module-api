@@ -195,7 +195,7 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
             for obj in objs:
                 s3.Bucket(obj_storage_bucket).objects.filter(Prefix=obj.key).delete()
 
-        # Upload a prvoided file
+        # Upload a provided file
         file_name = upload_mri_file.filename
         filename = os.path.splitext(file_name)[0] + ".tmp.part"
         obj_name = "mri_data/" + filename
