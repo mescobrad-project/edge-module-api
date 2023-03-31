@@ -388,11 +388,17 @@ paths:
         description: "Trigger MRI anonymization workflow"
         required: true
         type: "boolean"
+      - name: "upload_to_cloud"
+        in: "query"
+        description: "Upload defaced and anonymized MRI DICOM file on the cloud storage."
+        default: False
+        required: true
+        type: "boolean"
       security:
       - api_key: []
       responses:
-        "200":
-          description: "Successful operation"
+        "202":
+          description: "Successfully accepted"
         "405":
           description: "Invalid input"
       x-swagger-router-controller: "mescobrad_edge.controllers.plugins_controller"
