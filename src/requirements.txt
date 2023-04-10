@@ -14,3 +14,4 @@ nibabel >= 4.0.2
 numpy >= 1.21.6
 pyedflib >= 0.1.30
 fastparquet >= 0.8.1
+trino>=0.322.0

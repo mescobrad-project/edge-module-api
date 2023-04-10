@@ -130,10 +130,20 @@ def upload_questionnaires_data(upload_file, trigger_anonymization):  # noqa: E50
 
     # Upload data
     obj_storage_bucket = config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_BUCKET_LOCAL"]
+
+    # Create a bucket if it is not created
     if s3.Bucket(obj_storage_bucket).creation_date is None:
             s3.create_bucket(Bucket=obj_storage_bucket)
+
+    # Before uploading a new file, empty the folder if it is not empty
+    objs = list(s3.Bucket(obj_storage_bucket).objects.filter(Prefix="csv_data/", Delimiter="/"))
+    if len(list(objs))>0:
+        for obj in objs:
+            s3.Bucket(obj_storage_bucket).objects.filter(Prefix=obj.key).delete()
+
+    # Upload a provided file
     file_name = upload_file.filename
-    obj_name = "personal_data/" + file_name
+    obj_name = "csv_data/" + file_name
     file_content = upload_file.read()
     s3.Bucket(obj_storage_bucket).upload_fileobj(BytesIO(file_content), obj_name, ExtraArgs={'ContentType': "text/csv"})
 
@@ -143,7 +153,7 @@ def upload_questionnaires_data(upload_file, trigger_anonymization):  # noqa: E50
         workflow_id = "anonymization_data_workflow"
         print(f"Request received.. executing workflow {workflow_id}")
         workflow_engine_singleton.execute_workflow(workflow_id=workflow_id)
-    return None, 200
+    return None, 202
 
 
 def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, upload_to_cloud):  # noqa: E501
