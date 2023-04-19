@@ -266,14 +266,24 @@ def upload_edf_data(upload_edf_file, trigger_anonymization):  # noqa: E501
 
     # Upload data
     obj_storage_bucket = config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_BUCKET_LOCAL"]
+
+    # Create bucket if it is not created
     if s3.Bucket(obj_storage_bucket).creation_date is None:
             s3.create_bucket(Bucket=obj_storage_bucket)
+
+    # Before uploading a new file, empty the folder if it is not empty
+    objs = list(s3.Bucket(obj_storage_bucket).objects.filter(Prefix="edf_data_tmp/", Delimiter="/"))
+    if len(list(objs))>0:
+        for obj in objs:
+            s3.Bucket(obj_storage_bucket).objects.filter(Prefix=obj.key).delete()
+
+    # Upload a provided file
     file_name = upload_edf_file.filename
-    obj_name = "edf_data/" + file_name
+    obj_name = "edf_data_tmp/" + file_name
     file_content = upload_edf_file.read()
     s3.Bucket(obj_storage_bucket).upload_fileobj(BytesIO(file_content), obj_name)
 
-    # start anonymization workflow
+    # Start anonymization workflow
     if trigger_anonymization:
         workflow_id = "EDF_anonymization_workflow"
         workflow_engine_singleton = WorkflowEngine()
