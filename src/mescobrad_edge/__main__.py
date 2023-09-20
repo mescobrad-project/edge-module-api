@@ -42,7 +42,7 @@ def main():
     singleton.plugin_manager = PluginManager(singleton.PLUGIN_FOLDER_PATH, plugin_downloader, default_validator, None)
     __init_observer__(singleton.PLUGIN_FOLDER_PATH)
 
-    app.run(port=8080, host='0.0.0.0')
+    app.run(port=8080, host='0.0.0.0', ssl_context='adhoc')
 
 
 
