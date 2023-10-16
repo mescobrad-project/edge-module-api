@@ -113,7 +113,7 @@ def upload_questionnaires_data(upload_file, trigger_anonymization):  # noqa: E50
     import configparser
 
     # Check if data is csv file
-    if not upload_file.filename.endswith('.csv'):
+    if not upload_file.filename.lower().endswith('.csv'):
         return None, 405
 
     # Init client
@@ -176,7 +176,7 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
     import configparser
 
     # Check if data is csv file
-    if not upload_mri_file.filename.endswith('.zip'):
+    if not upload_mri_file.filename.lower().endswith('.zip'):
         return None, 405
 
     # Init client
@@ -249,7 +249,7 @@ def upload_edf_data(upload_edf_file, trigger_anonymization):  # noqa: E501
     import configparser
 
     # Check if data is edf file
-    if not upload_edf_file.filename.endswith('.edf'):
+    if not upload_edf_file.filename.lower().endswith('.edf'):
         return None, 405
 
     # Init client
