@@ -292,6 +292,62 @@ def upload_edf_data(upload_edf_file, trigger_anonymization):  # noqa: E501
     return None, 202
 
 
+def upload_actiwatch_actigraphy_data(upload_actigraphy_file):  # noqa: E501
+    """Upload actiwatch (Philips) actigraphy data
+
+    This API allows to upload actigraphy data from actiwatch Philips data. # noqa: E501
+
+    :param upload_file: The actiwatch actigraphy file to upload
+    :type upload_file: werkzeug.datastructures.FileStorage
+
+    :rtype: None
+    """
+    from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
+    import configparser
+
+    # Check if data is in csv file format
+    if not upload_actigraphy_file.filename.lower().endswith('.csv'):
+        return None, 405
+
+    # Init client
+    CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
+    PLUGIN_CONF_MAIN_SECTION = 'edge-module-configuration'
+    config = configparser.ConfigParser()
+    config.read(CONF_FILE_PATH)
+    s3 = boto3.resource('s3',
+                        endpoint_url=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_URL_LOCAL"],
+                        aws_access_key_id=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_ACCESS_ID_LOCAL"],
+                        aws_secret_access_key=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_ACCESS_SECRET_LOCAL"],
+                        config=Config(signature_version='s3v4'),
+                        region_name=config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_REGION"])
+
+    # Upload data
+    obj_storage_bucket = config[PLUGIN_CONF_MAIN_SECTION]["OBJ_STORAGE_BUCKET_LOCAL"]
+
+    # Create bucket if it is not created
+    if s3.Bucket(obj_storage_bucket).creation_date is None:
+            s3.create_bucket(Bucket=obj_storage_bucket)
+
+    # Before uploading a new file, empty the folder if it is not empty
+    objs = list(s3.Bucket(obj_storage_bucket).objects.filter(Prefix="actigraphy_data_tmp/", Delimiter="/"))
+    if len(list(objs))>0:
+        for obj in objs:
+            s3.Bucket(obj_storage_bucket).objects.filter(Prefix=obj.key).delete()
+
+    # Upload a provided file
+    file_name = upload_actigraphy_file.filename
+    obj_name = "actigraphy_data_tmp/" + file_name
+    file_content = upload_actigraphy_file.read()
+    s3.Bucket(obj_storage_bucket).upload_fileobj(BytesIO(file_content), obj_name)
+
+    # Start workflow
+    workflow_id = "actiwatch_actigraphy_workflow"
+    workflow_engine_singleton = WorkflowEngine()
+    print(f"Request received.. executing workflow {workflow_id}")
+    workflow_engine_singleton.execute_workflow(workflow_id=workflow_id)
+
+    return None, 202
+
 def update_plugin_config_by_id(plugin_id, body):  # noqa: E501
     """Update plugin configuration by plugin ID
 
