@@ -16,3 +16,4 @@ pyedflib >= 0.1.30
 fastparquet >= 0.8.1
 trino>=0.322.0
 pyopenssl
+pyActigraphy

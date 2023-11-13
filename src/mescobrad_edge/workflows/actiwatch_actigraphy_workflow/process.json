@@ -1,0 +1,12 @@
+{
+    "id": "actiwatch_actigraphy_workflow",
+    "name": "actiwatch_actigraphy_workflow",
+    "operations": [
+      {
+        "id": "extract_actiwatch_data",
+        "name": "Extract_actiwatch_data",
+        "description": "Extract data from actiwatch actigraphy csv file.",
+        "plugin_id": "actiwatch_actigraphy_plugin"
+      }
+    ]
+}
