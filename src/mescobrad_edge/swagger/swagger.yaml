@@ -333,7 +333,7 @@ paths:
         "404":
           description: "Plugin not found"
       x-swagger-router-controller: "mescobrad_edge.controllers.plugins_controller"
-  /plugins/data_upload:
+  /plugins/data_upload/{workspace_id}:
     post:
       tags:
       - "Plugins"
@@ -353,6 +353,11 @@ paths:
         description: "Trigger anonymization workflow"
         required: true
         type: "boolean"
+      - name: "workspace_id"
+        in: "path"
+        description: "Workspace ID from which the file is uploaded."
+        type: "string"
+        required: true
       security:
       - api_key: []
       responses:
@@ -402,7 +407,7 @@ paths:
         "405":
           description: "Invalid input"
       x-swagger-router-controller: "mescobrad_edge.controllers.plugins_controller"
-  /plugins/edf_data_upload:
+  /plugins/edf_data_upload/{workspace_id}:
     post:
       tags:
       - "Plugins"
@@ -421,7 +426,12 @@ paths:
         in: "query"
         description: "Trigger edf anonymization workflow"
         required: true
-        type: boolean
+        type: "boolean"
+      - name: "workspace_id"
+        in: "path"
+        description: "Workspace ID from which the file is uploaded."
+        type: "string"
+        required: true
       security:
       - api_key: []
       responses:
@@ -430,7 +440,7 @@ paths:
         "405":
           description: "Invalid input"
       x-swagger-router-controller: "mescobrad_edge.controllers.plugins_controller"
-  /plugins/actiwatch_actigraphy_upload:
+  /plugins/actiwatch_actigraphy_upload/{workspace_id}:
     post:
       tags:
       - "Plugins"
@@ -444,6 +454,11 @@ paths:
         in: "formData"
         type: "file"
         description: "The actiwatch actigraphy file to upload"
+        required: true
+      - name: "workspace_id"
+        in: "path"
+        description: "Workspace ID from which the file is uploaded."
+        type: "string"
         required: true
       security:
       - api_key: []

@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 import json
+from dataclasses import dataclass
 
 import importlib.util
 import sys
@@ -12,16 +13,25 @@ from mescobrad_edge.models.workflow_run import WorkflowRun
 from mescobrad_edge.singleton import ROOT_DIR, PLUGIN_FOLDER_PATH as PLUGIN_FOLDER
 from mescobrad_edge.workflow_engine.workflow_singleton import WORKFLOW_FOLDER_PATH as WORKFLOW_FOLDER, get_mutex_from_workflow_id
 
+@dataclass
+class PluginExchangeMetadata():
+    file_name: str = None
+    file_content_type: str = None
+    file_size: int = None
+    created_on: str = None
+    workspace_id: str = None
+
 class WorkflowThread():
 
-    def __init__(self, workflow, run_info) -> None:
+    def __init__(self, workflow, run_info, workspace_id) -> None:
         self.__workflow__ = workflow
         self.__run_info__ = run_info
+        self.__workspace_id__ = workspace_id
 
     def run(self):
         print(f"Starting a new run for workflow {self.__workflow__.id} with id {self.__run_info__.id}")
 
-        exchange_info = None
+        exchange_info = PluginExchangeMetadata(workspace_id=self.__workspace_id__)
         # Iterate over the operations
         for operation in self.__workflow__.operations:
             exchange_info = self.__run_operation__(operation, exchange_info)
@@ -90,10 +100,10 @@ class WorkflowThread():
 
 
 class WorkflowDefaultExecutor(Executor):
-    def run(self, workflow):
+    def run(self, workflow, workspace_id):
         run_info = WorkflowRun(id=uuid.uuid4(), ts=datetime.now().strftime("%m/%d/%Y %H:%M:%S"), status='CREATED')
 
         # Create a new thread
-        p = Thread(target=WorkflowThread(workflow, run_info).run)
+        p = Thread(target=WorkflowThread(workflow, run_info, workspace_id=workspace_id).run)
 
         return p, run_info
