@@ -84,13 +84,6 @@ class PluginManager():
             logging.error("Impossible to download plugin {} at url {}".format(plugin_id, plugin_repo))
             return False
 
-    def run_sh_scripts(self, plugin_id):
-        plugin_path = ROOT_DIR + "/" + self.plugin_folder_path + plugin_id
-        if "install_scripts" in os.listdir(plugin_path):
-            cmd = os.path.join(plugin_path, "install_scripts/install.sh")
-            subprocess.Popen("chmod +x " + cmd, shell=True, executable="/bin/bash").wait()
-            subprocess.Popen(cmd, shell=True, executable="/bin/bash").wait()
-
     def delete_plugin_folder(self, plugin_id) -> None:
         # Delete plugin folder recursively
         shutil.rmtree(ROOT_DIR + "/" +self.plugin_folder_path + plugin_id, ignore_errors=True)
@@ -100,11 +93,6 @@ class PluginManager():
         is_valid, plugin_info = self.__validate_plugin__(plugin_id)
         if is_valid:
             logging.info("{} is a valid plugin".format(plugin_id))
-            # run script for installation if there is install file
-            try:
-                self.run_sh_scripts(plugin_id)
-            except:
-                logging.error("Impossible to install plugin {}".format(plugin_id))
             # Update the plugin list file
             # Lock on general plugin list file
             with plugin_list_mutex:

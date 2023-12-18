@@ -5,7 +5,9 @@ WORKDIR /usr/src/app
 
 COPY src/requirements.txt /usr/src/app/
 
-RUN apt-get update && apt-get install -y git dcm2niix unzip gzip wget libgomp1
+RUN apt-get update && apt-get install -y git dcm2niix unzip gzip wget libgomp1 bc \
+    binutils perl psmisc sudo tar tcsh uuid-dev vim-common libjpeg62-turbo-dev procps \
+    libgdcm-tools
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
