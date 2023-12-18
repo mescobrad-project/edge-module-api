@@ -96,7 +96,7 @@ def install_plugin(body):  # noqa: E501
         return None, 405
 
 
-def upload_questionnaires_data(upload_file, trigger_anonymization):  # noqa: E501
+def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id):  # noqa: E501
     """Upload questionnaires data
 
     This API allows to upload questionnaires data. # noqa: E501
@@ -105,6 +105,8 @@ def upload_questionnaires_data(upload_file, trigger_anonymization):  # noqa: E50
     :type upload_file: werkzeug.datastructures.FileStorage
     :param trigger_anonymization: Trigger anonymization workflow
     :type trigger_anonymization: bool
+    :param workspace_id: Workspace ID from which file is uploaded
+    :type workspace_id: str
 
     :rtype: None
     """
@@ -149,7 +151,7 @@ def upload_questionnaires_data(upload_file, trigger_anonymization):  # noqa: E50
 
     # start anonymization workflow
     if trigger_anonymization:
-        workflow_engine_singleton = WorkflowEngine()
+        workflow_engine_singleton = WorkflowEngine(workspace_id=workspace_id)
         workflow_id = "anonymization_data_workflow"
         print(f"Request received.. executing workflow {workflow_id}")
         workflow_engine_singleton.execute_workflow(workflow_id=workflow_id)
@@ -233,7 +235,7 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
     return None, 202
 
 
-def upload_edf_data(upload_edf_file, trigger_anonymization):  # noqa: E501
+def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id):  # noqa: E501
     """Upload edf file
 
     This API allows to upload edf data. # noqa: E501
@@ -242,6 +244,8 @@ def upload_edf_data(upload_edf_file, trigger_anonymization):  # noqa: E501
     :type upload_edf_file: werkzeug.datastructures.FileStorage
     :param trigger_anonymization: Trigger edf anonymization workflow
     :type trigger_anonymization: bool
+    :param workspace_id: Workspace ID from which file is uploaded
+    :type workspace_id: str
 
     :rtype: None
     """
@@ -286,19 +290,21 @@ def upload_edf_data(upload_edf_file, trigger_anonymization):  # noqa: E501
     # Start anonymization workflow
     if trigger_anonymization:
         workflow_id = "EDF_anonymization_workflow"
-        workflow_engine_singleton = WorkflowEngine()
+        workflow_engine_singleton = WorkflowEngine(workspace_id=workspace_id)
         print(f"Request received.. executing workflow {workflow_id}")
         workflow_engine_singleton.execute_workflow(workflow_id=workflow_id)
     return None, 202
 
 
-def upload_actiwatch_actigraphy_data(upload_actigraphy_file):  # noqa: E501
+def upload_actiwatch_actigraphy_data(upload_actigraphy_file, workspace_id):  # noqa: E501
     """Upload actiwatch (Philips) actigraphy data
 
     This API allows to upload actigraphy data from actiwatch Philips data. # noqa: E501
 
     :param upload_file: The actiwatch actigraphy file to upload
     :type upload_file: werkzeug.datastructures.FileStorage
+    :param workspace_id: Workspace ID from which file is uploaded
+    :type workspace_id: str
 
     :rtype: None
     """
@@ -342,7 +348,7 @@ def upload_actiwatch_actigraphy_data(upload_actigraphy_file):  # noqa: E501
 
     # Start workflow
     workflow_id = "actiwatch_actigraphy_workflow"
-    workflow_engine_singleton = WorkflowEngine()
+    workflow_engine_singleton = WorkflowEngine(workspace_id=workspace_id)
     print(f"Request received.. executing workflow {workflow_id}")
     workflow_engine_singleton.execute_workflow(workflow_id=workflow_id)
 
