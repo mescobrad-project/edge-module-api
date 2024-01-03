@@ -468,6 +468,106 @@ paths:
         "405":
           description: "Invalid input"
       x-swagger-router-controller: "mescobrad_edge.controllers.plugins_controller"
+  /current:
+    get:
+      tags:
+      - "Autoupdate"
+      summary: "Get installed version of edge module"
+      description: "This API allows to get the version of the installed edge module"
+      operationId: "current_version"
+      produces:
+      - "application/json"
+      security:
+      - api_key: []
+      responses:
+        "200":
+          description: "successful operation"
+      x-swagger-router-controller: "mescobrad_edge.controllers.autoupdate_controller"
+  /update:
+    get:
+      tags:
+        - "Autoupdate"
+      summary: "Update edge module to latest version"
+      description: "This API allows to update the edge module to the latest version"
+      operationId: "update_module"
+      produces:
+        - "application/json"
+      security:
+        - api_key: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: string
+            description: "Success message"
+
+  /update/<version>:
+    get:
+      tags:
+        - "Autoupdate"
+      summary: "Update edge module to specified version"
+      description: "This API allows to update the edge module to the specified version"
+      operationId: "update_to_version"
+      produces:
+        - "application/json"
+      security:
+        - api_key: []
+      parameters:
+        - name: version
+          in: path
+          required: true
+          description: The version to update to
+          type: string
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: string
+            description: "Success message"
+
+  /listversions:
+    get:
+      tags:
+        - "Autoupdate"
+      summary: "List available edge module versions"
+      description: "This API lists the available versions of the edge module"
+      operationId: "list_available_versions"
+      produces:
+        - "application/json"
+      security:
+        - api_key: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              type: string
+              description: An available version of the edge module
+
+  /updateplugin/<plugin_name>:
+    get:
+      tags:
+        - "Autoupdate"
+      summary: "Update specified plugin to latest version"
+      description: "This API allows to update the specified plugin to the latest version"
+      operationId: "update_plugin"
+      produces:
+        - "application/json"
+      security:
+        - api_key: []
+      parameters:
+        - name: plugin_name
+          in: path
+          required: true
+          description: The name of the plugin to update
+          type: string
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: string
+            description: "Success message"
 securityDefinitions:
   api_key:
     type: "apiKey"
