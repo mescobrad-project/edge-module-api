@@ -366,7 +366,7 @@ paths:
         "405":
           description: "Invalid input"
       x-swagger-router-controller: "mescobrad_edge.controllers.plugins_controller"
-  /plugins/mri_data_upload:
+  /plugins/mri_data_upload/{workspace_id}:
     post:
       tags:
       - "Plugins"
@@ -399,6 +399,11 @@ paths:
         default: False
         required: true
         type: "boolean"
+      - name: "workspace_id"
+        in: "path"
+        description: "Workspace ID from which the file is uploaded."
+        type: "string"
+        required: true
       security:
       - api_key: []
       responses:
