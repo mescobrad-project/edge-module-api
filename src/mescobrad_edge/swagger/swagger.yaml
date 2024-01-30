@@ -500,8 +500,8 @@ paths:
           schema:
             type: string
             description: "Success message"
-
-  /update/<version>:
+      x-swagger-router-controller: "mescobrad_edge.controllers.autoupdate_controller"
+  /update/{version}:
     get:
       tags:
         - "Autoupdate"
@@ -524,7 +524,7 @@ paths:
           schema:
             type: string
             description: "Success message"
-
+      x-swagger-router-controller: "mescobrad_edge.controllers.autoupdate_controller"
   /listversions:
     get:
       tags:
@@ -544,8 +544,8 @@ paths:
             items:
               type: string
               description: An available version of the edge module
-
-  /updateplugin/<plugin_name>:
+      x-swagger-router-controller: "mescobrad_edge.controllers.autoupdate_controller"
+  /updateplugin/{plugin_name}:
     get:
       tags:
         - "Autoupdate"
@@ -568,6 +568,7 @@ paths:
           schema:
             type: string
             description: "Success message"
+      x-swagger-router-controller: "mescobrad_edge.controllers.autoupdate_controller"
 securityDefinitions:
   api_key:
     type: "apiKey"
