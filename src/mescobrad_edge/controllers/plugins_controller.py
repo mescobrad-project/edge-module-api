@@ -158,7 +158,7 @@ def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id)
     return None, 202
 
 
-def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, upload_to_cloud):  # noqa: E501
+def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, upload_to_cloud, workspace_id):  # noqa: E501
     """Upload MRI data
 
     This API allows to upload MRI data. # noqa: E501
@@ -171,6 +171,8 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
     :type trigger_anonymization: bool
     :param upload_to_cloud: Upload defaced and anonymized MRI DICOM files.
     :type upload_to_cloud: bool
+    :param workspace_id: Workspace ID from which file is uploaded
+    :type workspace_id: str
 
     :rtype: None
     """
@@ -222,14 +224,14 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
             # TO DO - Extend this, when second deface method is added
             workflow_id = ""
 
-        workflow_engine_singleton = WorkflowEngine()
+        workflow_engine_singleton = WorkflowEngine(workspace_id=workspace_id)
         print(f"Request received.. executing workflow {workflow_id}")
         workflow_engine_singleton.execute_workflow(workflow_id=workflow_id)
 
     elif trigger_anonymization and upload_to_cloud:
         workflow_id = "MRI_anonymized_data_upload_to_cloud_workflow"
 
-        workflow_engine_singleton = WorkflowEngine()
+        workflow_engine_singleton = WorkflowEngine(workspace_id=workspace_id)
         print(f"Request received.. executing workflow {workflow_id}")
         workflow_engine_singleton.execute_workflow(workflow_id=workflow_id)
     return None, 202
