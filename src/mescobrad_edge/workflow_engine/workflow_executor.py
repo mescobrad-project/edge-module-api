@@ -19,19 +19,19 @@ class PluginExchangeMetadata():
     file_content_type: str = None
     file_size: int = None
     created_on: str = None
-    workspace_id: str = None
+    data_info: dict = None
 
 class WorkflowThread():
 
-    def __init__(self, workflow, run_info, workspace_id) -> None:
+    def __init__(self, workflow, run_info, data_info) -> None:
         self.__workflow__ = workflow
         self.__run_info__ = run_info
-        self.__workspace_id__ = workspace_id
+        self.__data_info__ = data_info
 
     def run(self):
         print(f"Starting a new run for workflow {self.__workflow__.id} with id {self.__run_info__.id}")
 
-        exchange_info = PluginExchangeMetadata(workspace_id=self.__workspace_id__)
+        exchange_info = PluginExchangeMetadata(data_info=self.__data_info__)
         # Iterate over the operations
         for operation in self.__workflow__.operations:
             exchange_info = self.__run_operation__(operation, exchange_info)
@@ -100,10 +100,10 @@ class WorkflowThread():
 
 
 class WorkflowDefaultExecutor(Executor):
-    def run(self, workflow, workspace_id):
+    def run(self, workflow, data_info):
         run_info = WorkflowRun(id=uuid.uuid4(), ts=datetime.now().strftime("%m/%d/%Y %H:%M:%S"), status='CREATED')
 
         # Create a new thread
-        p = Thread(target=WorkflowThread(workflow, run_info, workspace_id=workspace_id).run)
+        p = Thread(target=WorkflowThread(workflow, run_info, data_info=data_info).run)
 
         return p, run_info
