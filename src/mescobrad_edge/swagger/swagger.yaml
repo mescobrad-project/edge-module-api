@@ -358,6 +358,23 @@ paths:
         description: "Workspace ID from which the file is uploaded."
         type: "string"
         required: true
+      - name: "first_name"
+        in: "formData"
+        description: "Name of the patient."
+        type: "string"
+      - name: "last_name"
+        in: "formData"
+        description: "Surname of the patient."
+        type: "string"
+      - name: "date_of_birth"
+        in: "formData"
+        description: "Date of birth of the patient."
+        type: "string"
+        format: "date"
+      - name: "unique_id"
+        in: "formData"
+        description: "Unique ID of the patient."
+        type: "string"
       security:
       - api_key: []
       responses:
@@ -404,6 +421,23 @@ paths:
         description: "Workspace ID from which the file is uploaded."
         type: "string"
         required: true
+      - name: "first_name"
+        in: "formData"
+        description: "Name of the patient."
+        type: "string"
+      - name: "last_name"
+        in: "formData"
+        description: "Surname of the patient."
+        type: "string"
+      - name: "date_of_birth"
+        in: "formData"
+        description: "Date of birth of the patient."
+        type: "string"
+        format: "date"
+      - name: "unique_id"
+        in: "formData"
+        description: "Unique ID of the patient."
+        type: "string"
       security:
       - api_key: []
       responses:
@@ -437,6 +471,23 @@ paths:
         description: "Workspace ID from which the file is uploaded."
         type: "string"
         required: true
+      - name: "first_name"
+        in: "formData"
+        description: "Name of the patient."
+        type: "string"
+      - name: "last_name"
+        in: "formData"
+        description: "Surname of the patient."
+        type: "string"
+      - name: "date_of_birth"
+        in: "formData"
+        description: "Date of birth of the patient."
+        type: "string"
+        format: "date"
+      - name: "unique_id"
+        in: "formData"
+        description: "Unique ID of the patient."
+        type: "string"
       security:
       - api_key: []
       responses:
@@ -465,6 +516,23 @@ paths:
         description: "Workspace ID from which the file is uploaded."
         type: "string"
         required: true
+      - name: "first_name"
+        in: "formData"
+        description: "Name of the patient."
+        type: "string"
+      - name: "last_name"
+        in: "formData"
+        description: "Surname of the patient."
+        type: "string"
+      - name: "date_of_birth"
+        in: "formData"
+        description: "Date of birth of the patient."
+        type: "string"
+        format: "date"
+      - name: "unique_id"
+        in: "formData"
+        description: "Unique ID of the patient."
+        type: "string"
       security:
       - api_key: []
       responses:

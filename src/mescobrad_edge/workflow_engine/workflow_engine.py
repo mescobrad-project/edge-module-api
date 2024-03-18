@@ -12,12 +12,12 @@ from mescobrad_edge.workflow_engine.workflow_singleton import WORKFLOW_FOLDER_PA
 
 class WorkflowEngine():
 
-    def __init__(self, serde=None, loader=None, executor=None, workspace_id=None):
+    def __init__(self, serde=None, loader=None, executor=None, data_info=None):
         self.__serde__ = WorkflowDefaultSerde() if serde is None else serde()
         self.__validator__ = WorkflowValidator()
         self.__loader__ = WorkflowDefaultLoader() if loader is None else loader()
         self.__executor__ = WorkflowDefaultExecutor() if executor is None else executor()
-        self.__workspace_id__ = workspace_id
+        self.__data_info__ = data_info
 
     def execute_workflow(self, workflow_id: str) -> str:
         # Check if workflow exists
@@ -29,7 +29,7 @@ class WorkflowEngine():
                 # Load workflow from file system and deserialize it
                 workflow = self.__serde__.deserialize(self.__loader__.load_workflow(workflow_id=workflow_id))
                 # Execute workflow
-                workflow_thread, workflow_run_info = self.__executor__.run(workflow, workspace_id=self.__workspace_id__)
+                workflow_thread, workflow_run_info = self.__executor__.run(workflow, data_info=self.__data_info__)
                 # Save run info
                 self.__loader__.save_run_info(workflow_id=workflow_id, run_info=workflow_run_info)
 
