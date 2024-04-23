@@ -33,7 +33,7 @@ def __init_observer__(plugin_folder_path):
 
 def main():
     app = connexion.App(__name__, specification_dir='./swagger/')
-    app.app.config['MAX_CONTENT_LENGTH'] = 1024*1024*1024
+    app.app.config['MAX_CONTENT_LENGTH'] = 1024*1024*1024*5
     CORS(app.app)
     app.app.json_encoder = encoder.JSONEncoder
     app.add_api('swagger.yaml', arguments={'title': 'MES-CoBraD Edge module API'}, pythonic_params=True)
