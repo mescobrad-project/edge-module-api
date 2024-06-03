@@ -375,6 +375,10 @@ paths:
         in: "formData"
         description: "Unique ID of the patient."
         type: "string"
+      - name: "clinical_id"
+        in: "formData"
+        description: "Clinical ID of the patient."
+        type: "string"
       security:
       - api_key: []
       responses:
@@ -438,6 +442,10 @@ paths:
         in: "formData"
         description: "Unique ID of the patient."
         type: "string"
+      - name: "clinical_id"
+        in: "formData"
+        description: "Clinical ID of the patient."
+        type: "string"
       security:
       - api_key: []
       responses:
@@ -488,6 +496,10 @@ paths:
         in: "formData"
         description: "Unique ID of the patient."
         type: "string"
+      - name: "clinical_id"
+        in: "formData"
+        description: "Clinical ID of the patient."
+        type: "string"
       security:
       - api_key: []
       responses:
@@ -532,6 +544,10 @@ paths:
       - name: "unique_id"
         in: "formData"
         description: "Unique ID of the patient."
+        type: "string"
+      - name: "clinical_id"
+        in: "formData"
+        description: "Clinical ID of the patient."
         type: "string"
       security:
       - api_key: []
