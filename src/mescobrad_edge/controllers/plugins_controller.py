@@ -97,6 +97,7 @@ def install_plugin(body):  # noqa: E501
 
 
 def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
+                               upload_metadata_json_file=None,
                                first_name=None, last_name=None, date_of_birth=None,
                                unique_id=None, clinical_id=None):  # noqa: E501
     """Upload questionnaires data
@@ -109,6 +110,8 @@ def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
     :type trigger_anonymization: bool
     :param workspace_id: Workspace ID from which file is uploaded
     :type workspace_id: str
+    :param upload_metadata_json_file: The file to upload
+    :type upload_metadata_json_file: werkzeug.datastructures.FileStorage
     :param first_name: Name of the patient.
     :type first_name: str
     :param last_name: Surname of the patient.
@@ -143,7 +146,8 @@ def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
                           "date_of_birth": date_of_birth,
                           "unique_id": unique_id,
                           "MRN": clinical_id,
-                          "workspace_id": workspace_id}
+                          "workspace_id": workspace_id,
+                          "metadata_json_file": upload_metadata_json_file.read() if upload_metadata_json_file is not None else None}
     # Init client
     CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
     PLUGIN_CONF_MAIN_SECTION = 'edge-module-configuration'
@@ -188,8 +192,8 @@ def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
 
 
 def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, upload_to_cloud,
-                    workspace_id, first_name=None, last_name=None, date_of_birth=None,
-                    unique_id=None, clinical_id=None):  # noqa: E501
+                    workspace_id, upload_metadata_json_file=None, first_name=None,
+                    last_name=None, date_of_birth=None, unique_id=None, clinical_id=None):  # noqa: E501
     """Upload MRI data
 
     This API allows to upload MRI data. # noqa: E501
@@ -204,6 +208,8 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
     :type upload_to_cloud: bool
     :param workspace_id: Workspace ID from which file is uploaded
     :type workspace_id: str
+    :param upload_metadata_json_file: The file to upload
+    :type upload_metadata_json_file: werkzeug.datastructures.FileStorage
     :param first_name: Name of the patient.
     :type first_name: str
     :param last_name: Surname of the patient.
@@ -237,7 +243,8 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
                           "date_of_birth": date_of_birth,
                           "unique_id": unique_id,
                           "MRN": clinical_id,
-                          "workspace_id": workspace_id}
+                          "workspace_id": workspace_id,
+                          "metadata_json_file": upload_metadata_json_file.read() if upload_metadata_json_file is not None else None}
 
     # Init client
     CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
@@ -296,8 +303,8 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
 
 
 def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
-                    first_name=None, last_name=None, date_of_birth=None,
-                    unique_id=None, clinical_id=None):  # noqa: E501
+                    upload_metadata_json_file=None, first_name=None, last_name=None,
+                    date_of_birth=None, unique_id=None, clinical_id=None):  # noqa: E501
     """Upload edf file
 
     This API allows to upload edf data. # noqa: E501
@@ -308,6 +315,8 @@ def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
     :type trigger_anonymization: bool
     :param workspace_id: Workspace ID from which file is uploaded
     :type workspace_id: str
+    :param upload_metadata_json_file: The file to upload
+    :type upload_metadata_json_file: werkzeug.datastructures.FileStorage
     :param first_name: Name of the patient.
     :type first_name: str
     :param last_name: Surname of the patient.
@@ -341,7 +350,8 @@ def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
                           "date_of_birth": date_of_birth,
                           "unique_id": unique_id,
                           "MRN": clinical_id,
-                          "workspace_id": workspace_id}
+                          "workspace_id": workspace_id,
+                          "metadata_json_file": upload_metadata_json_file.read() if upload_metadata_json_file is not None else None}
 
     # Init client
     CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
@@ -386,8 +396,9 @@ def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
 
 
 def upload_actiwatch_actigraphy_data(upload_actigraphy_file, workspace_id,
-                                     first_name=None, last_name=None, date_of_birth=None,
-                                     unique_id=None, clinical_id=None):  # noqa: E501
+                                     upload_metadata_json_file=None, first_name=None,
+                                     last_name=None, date_of_birth=None, unique_id=None,
+                                     clinical_id=None):  # noqa: E501
     """Upload actiwatch (Philips) actigraphy data
 
     This API allows to upload actigraphy data from actiwatch Philips data. # noqa: E501
@@ -396,6 +407,8 @@ def upload_actiwatch_actigraphy_data(upload_actigraphy_file, workspace_id,
     :type upload_file: werkzeug.datastructures.FileStorage
     :param workspace_id: Workspace ID from which file is uploaded
     :type workspace_id: str
+    :param upload_metadata_json_file: The file to upload
+    :type upload_metadata_json_file: werkzeug.datastructures.FileStorage
     :param first_name: Name of the patient.
     :type first_name: str
     :param last_name: Surname of the patient.
@@ -429,7 +442,8 @@ def upload_actiwatch_actigraphy_data(upload_actigraphy_file, workspace_id,
                           "date_of_birth": date_of_birth,
                           "unique_id": unique_id,
                           "MRN": clinical_id,
-                          "workspace_id": workspace_id}
+                          "workspace_id": workspace_id,
+                          "metadata_json_file": upload_metadata_json_file.read() if upload_metadata_json_file is not None else None}
 
     # Init client
     CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
