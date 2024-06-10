@@ -97,8 +97,9 @@ def install_plugin(body):  # noqa: E501
 
 
 def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
+                               upload_metadata_json_file=None,
                                first_name=None, last_name=None, date_of_birth=None,
-                               unique_id=None):  # noqa: E501
+                               unique_id=None, clinical_id=None):  # noqa: E501
     """Upload questionnaires data
 
     This API allows to upload questionnaires data. # noqa: E501
@@ -109,6 +110,8 @@ def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
     :type trigger_anonymization: bool
     :param workspace_id: Workspace ID from which file is uploaded
     :type workspace_id: str
+    :param upload_metadata_json_file: The file to upload
+    :type upload_metadata_json_file: werkzeug.datastructures.FileStorage
     :param first_name: Name of the patient.
     :type first_name: str
     :param last_name: Surname of the patient.
@@ -117,13 +120,15 @@ def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
     :type date_of_birth: str
     :param unique_id: Unique ID of the patient.
     :type unique_id: str
+    :param clinical_id: Clinical ID of the patient.
+    :type clinical_id: str
 
     :rtype: None
     """
 
     from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
     import configparser
-    import pandas as pd
+    import re
 
     # Check if data is csv file
     if not upload_file.filename.lower().endswith('.csv'):
@@ -140,7 +145,9 @@ def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
                           "surname": last_name,
                           "date_of_birth": date_of_birth,
                           "unique_id": unique_id,
-                          "workspace_id": workspace_id}
+                          "MRN": clinical_id,
+                          "workspace_id": workspace_id,
+                          "metadata_json_file": upload_metadata_json_file.read() if upload_metadata_json_file is not None else None}
     # Init client
     CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
     PLUGIN_CONF_MAIN_SECTION = 'edge-module-configuration'
@@ -168,6 +175,8 @@ def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
 
     # Upload a provided file
     file_name = upload_file.filename
+    # Remove any special character from the file_name
+    file_name = re.sub(r'[^a-zA-Z0-9_]', '_', os.path.splitext(file_name)[0]) + ".csv"
     obj_name = "csv_data/" + file_name
     file_content = upload_file.read()
     s3.Bucket(obj_storage_bucket).upload_fileobj(BytesIO(file_content), obj_name,
@@ -183,8 +192,8 @@ def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
 
 
 def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, upload_to_cloud,
-                    workspace_id, first_name=None, last_name=None, date_of_birth=None,
-                    unique_id=None):  # noqa: E501
+                    workspace_id, upload_metadata_json_file=None, first_name=None,
+                    last_name=None, date_of_birth=None, unique_id=None, clinical_id=None):  # noqa: E501
     """Upload MRI data
 
     This API allows to upload MRI data. # noqa: E501
@@ -199,6 +208,8 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
     :type upload_to_cloud: bool
     :param workspace_id: Workspace ID from which file is uploaded
     :type workspace_id: str
+    :param upload_metadata_json_file: The file to upload
+    :type upload_metadata_json_file: werkzeug.datastructures.FileStorage
     :param first_name: Name of the patient.
     :type first_name: str
     :param last_name: Surname of the patient.
@@ -207,11 +218,14 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
     :type date_of_birth: str
     :param national_unique_id: Unique ID of the patient.
     :type national_unique_id: str
+    :param clinical_id: Clinical ID of the patient.
+    :type clinical_id: str
 
     :rtype: None
     """
     from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
     import configparser
+    import re
 
     # Check if data is csv file
     if not upload_mri_file.filename.lower().endswith('.zip'):
@@ -228,7 +242,9 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
                           "surname": last_name,
                           "date_of_birth": date_of_birth,
                           "unique_id": unique_id,
-                          "workspace_id": workspace_id}
+                          "MRN": clinical_id,
+                          "workspace_id": workspace_id,
+                          "metadata_json_file": upload_metadata_json_file.read() if upload_metadata_json_file is not None else None}
 
     # Init client
     CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
@@ -258,6 +274,8 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
 
         # Upload a provided file
         file_name = upload_mri_file.filename
+        # Remove any special character from the file_name
+        file_name = re.sub(r'[^a-zA-Z0-9_]', '_', os.path.splitext(file_name)[0]) + ".zip"
         filename = os.path.splitext(file_name)[0] + ".tmp.part"
         obj_name = "mri_data/" + filename
         file_content = upload_mri_file.read()
@@ -285,8 +303,8 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
 
 
 def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
-                    first_name=None, last_name=None, date_of_birth=None,
-                    unique_id=None):  # noqa: E501
+                    upload_metadata_json_file=None, first_name=None, last_name=None,
+                    date_of_birth=None, unique_id=None, clinical_id=None):  # noqa: E501
     """Upload edf file
 
     This API allows to upload edf data. # noqa: E501
@@ -297,6 +315,8 @@ def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
     :type trigger_anonymization: bool
     :param workspace_id: Workspace ID from which file is uploaded
     :type workspace_id: str
+    :param upload_metadata_json_file: The file to upload
+    :type upload_metadata_json_file: werkzeug.datastructures.FileStorage
     :param first_name: Name of the patient.
     :type first_name: str
     :param last_name: Surname of the patient.
@@ -305,11 +325,14 @@ def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
     :type date_of_birth: str
     :param unique_id: Unique ID of the patient.
     :type unique_id: str
+    :param clinical_id: Clinical ID of the patient.
+    :type clinical_id: str
 
     :rtype: None
     """
     from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
     import configparser
+    import re
 
     # Check if data is edf file
     if not upload_edf_file.filename.lower().endswith('.edf'):
@@ -326,7 +349,9 @@ def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
                           "surname": last_name,
                           "date_of_birth": date_of_birth,
                           "unique_id": unique_id,
-                          "workspace_id": workspace_id}
+                          "MRN": clinical_id,
+                          "workspace_id": workspace_id,
+                          "metadata_json_file": upload_metadata_json_file.read() if upload_metadata_json_file is not None else None}
 
     # Init client
     CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
@@ -355,6 +380,8 @@ def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
 
     # Upload a provided file
     file_name = upload_edf_file.filename
+    # Remove any special character from the file_name
+    file_name = re.sub(r'[^a-zA-Z0-9_]', '_', os.path.splitext(file_name)[0]) + ".edf"
     obj_name = "edf_data_tmp/" + file_name
     file_content = upload_edf_file.read()
     s3.Bucket(obj_storage_bucket).upload_fileobj(BytesIO(file_content), obj_name)
@@ -369,8 +396,9 @@ def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
 
 
 def upload_actiwatch_actigraphy_data(upload_actigraphy_file, workspace_id,
-                                     first_name=None, last_name=None, date_of_birth=None,
-                                     unique_id=None):  # noqa: E501
+                                     upload_metadata_json_file=None, first_name=None,
+                                     last_name=None, date_of_birth=None, unique_id=None,
+                                     clinical_id=None):  # noqa: E501
     """Upload actiwatch (Philips) actigraphy data
 
     This API allows to upload actigraphy data from actiwatch Philips data. # noqa: E501
@@ -379,6 +407,8 @@ def upload_actiwatch_actigraphy_data(upload_actigraphy_file, workspace_id,
     :type upload_file: werkzeug.datastructures.FileStorage
     :param workspace_id: Workspace ID from which file is uploaded
     :type workspace_id: str
+    :param upload_metadata_json_file: The file to upload
+    :type upload_metadata_json_file: werkzeug.datastructures.FileStorage
     :param first_name: Name of the patient.
     :type first_name: str
     :param last_name: Surname of the patient.
@@ -387,11 +417,14 @@ def upload_actiwatch_actigraphy_data(upload_actigraphy_file, workspace_id,
     :type date_of_birth: str
     :param unique_id: Unique ID of the patient.
     :type unique_id: str
+    :param clinical_id: Clinical ID of the patient.
+    :type clinical_id: str
 
     :rtype: None
     """
     from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
     import configparser
+    import re
 
     # Check if data is in csv file format
     if not upload_actigraphy_file.filename.lower().endswith('.csv'):
@@ -408,7 +441,9 @@ def upload_actiwatch_actigraphy_data(upload_actigraphy_file, workspace_id,
                           "surname": last_name,
                           "date_of_birth": date_of_birth,
                           "unique_id": unique_id,
-                          "workspace_id": workspace_id}
+                          "MRN": clinical_id,
+                          "workspace_id": workspace_id,
+                          "metadata_json_file": upload_metadata_json_file.read() if upload_metadata_json_file is not None else None}
 
     # Init client
     CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
@@ -437,6 +472,8 @@ def upload_actiwatch_actigraphy_data(upload_actigraphy_file, workspace_id,
 
     # Upload a provided file
     file_name = upload_actigraphy_file.filename
+    # Remove any special character from the file_name
+    file_name = re.sub(r'[^a-zA-Z0-9_]', '_', os.path.splitext(file_name)[0]) + ".csv"
     obj_name = "actigraphy_data_tmp/" + file_name
     file_content = upload_actigraphy_file.read()
     s3.Bucket(obj_storage_bucket).upload_fileobj(BytesIO(file_content), obj_name)

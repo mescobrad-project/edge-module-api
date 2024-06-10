@@ -358,6 +358,11 @@ paths:
         description: "Workspace ID from which the file is uploaded."
         type: "string"
         required: true
+      - name: "upload_metadata_json_file"
+        in: "formData"
+        type: "file"
+        description: "The metadata json file to upload"
+        required: False
       - name: "first_name"
         in: "formData"
         description: "Name of the patient."
@@ -374,6 +379,10 @@ paths:
       - name: "unique_id"
         in: "formData"
         description: "Unique ID of the patient."
+        type: "string"
+      - name: "clinical_id"
+        in: "formData"
+        description: "Clinical ID of the patient."
         type: "string"
       security:
       - api_key: []
@@ -421,6 +430,11 @@ paths:
         description: "Workspace ID from which the file is uploaded."
         type: "string"
         required: true
+      - name: "upload_metadata_json_file"
+        in: "formData"
+        type: "file"
+        description: "The metadata json file to upload"
+        required: False
       - name: "first_name"
         in: "formData"
         description: "Name of the patient."
@@ -437,6 +451,10 @@ paths:
       - name: "unique_id"
         in: "formData"
         description: "Unique ID of the patient."
+        type: "string"
+      - name: "clinical_id"
+        in: "formData"
+        description: "Clinical ID of the patient."
         type: "string"
       security:
       - api_key: []
@@ -471,6 +489,11 @@ paths:
         description: "Workspace ID from which the file is uploaded."
         type: "string"
         required: true
+      - name: "upload_metadata_json_file"
+        in: "formData"
+        type: "file"
+        description: "The metadata json file to upload"
+        required: False
       - name: "first_name"
         in: "formData"
         description: "Name of the patient."
@@ -487,6 +510,10 @@ paths:
       - name: "unique_id"
         in: "formData"
         description: "Unique ID of the patient."
+        type: "string"
+      - name: "clinical_id"
+        in: "formData"
+        description: "Clinical ID of the patient."
         type: "string"
       security:
       - api_key: []
@@ -516,6 +543,11 @@ paths:
         description: "Workspace ID from which the file is uploaded."
         type: "string"
         required: true
+      - name: "upload_metadata_json_file"
+        in: "formData"
+        type: "file"
+        description: "The metadata json file to upload"
+        required: False
       - name: "first_name"
         in: "formData"
         description: "Name of the patient."
@@ -532,6 +564,10 @@ paths:
       - name: "unique_id"
         in: "formData"
         description: "Unique ID of the patient."
+        type: "string"
+      - name: "clinical_id"
+        in: "formData"
+        description: "Clinical ID of the patient."
         type: "string"
       security:
       - api_key: []
