@@ -430,6 +430,11 @@ paths:
         description: "Workspace ID from which the file is uploaded."
         type: "string"
         required: true
+      - name: "upload_anonymized_and_defaced_data"
+        in: "query"
+        description: "Upload anonymized and defaced MRI datasets."
+        required: true
+        type: "boolean"
       - name: "upload_metadata_json_file"
         in: "formData"
         type: "file"
