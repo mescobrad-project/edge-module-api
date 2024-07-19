@@ -191,9 +191,12 @@ def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
     return None, 202
 
 
-def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, upload_to_cloud,
-                    workspace_id, upload_metadata_json_file=None, first_name=None,
-                    last_name=None, date_of_birth=None, unique_id=None, clinical_id=None):  # noqa: E501
+def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization,
+                    upload_to_cloud, workspace_id,
+                    upload_anonymized_and_defaced_data,
+                    upload_metadata_json_file=None, first_name=None,
+                    last_name=None, date_of_birth=None, unique_id=None,
+                    clinical_id=None):  # noqa: E501
     """Upload MRI data
 
     This API allows to upload MRI data. # noqa: E501
@@ -208,6 +211,8 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
     :type upload_to_cloud: bool
     :param workspace_id: Workspace ID from which file is uploaded
     :type workspace_id: str
+    :param upload_anonymized_and_defaced_data: Upload already anonymized and defaced data
+    :type upload_anonymized_and_defaced_data: bool
     :param upload_metadata_json_file: The file to upload
     :type upload_metadata_json_file: werkzeug.datastructures.FileStorage
     :param first_name: Name of the patient.
@@ -244,7 +249,8 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization, uploa
                           "unique_id": unique_id,
                           "MRN": clinical_id,
                           "workspace_id": workspace_id,
-                          "metadata_json_file": upload_metadata_json_file.read() if upload_metadata_json_file is not None else None}
+                          "metadata_json_file": upload_metadata_json_file.read() if upload_metadata_json_file is not None else None,
+                          "upload_anonymized_and_defaced_data": upload_anonymized_and_defaced_data}
 
     # Init client
     CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
