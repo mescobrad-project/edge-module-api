@@ -431,7 +431,7 @@ paths:
         type: "string"
         required: true
       - name: "upload_anonymized_and_defaced_data"
-        in: "query"
+        in: "formData"
         description: "Upload anonymized and defaced MRI datasets."
         required: true
         type: "boolean"

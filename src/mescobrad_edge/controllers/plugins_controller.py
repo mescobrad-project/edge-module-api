@@ -193,7 +193,7 @@ def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
 
 def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization,
                     upload_to_cloud, workspace_id,
-                    upload_anonymized_and_defaced_data,
+                    upload_anonymized_and_defaced_data=False,
                     upload_metadata_json_file=None, first_name=None,
                     last_name=None, date_of_birth=None, unique_id=None,
                     clinical_id=None):  # noqa: E501
