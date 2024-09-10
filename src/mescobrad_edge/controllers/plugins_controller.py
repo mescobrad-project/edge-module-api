@@ -231,6 +231,8 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization,
     from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
     import configparser
     import re
+    import time
+    import pytz
 
     # Check if data is csv file
     if not upload_mri_file.filename.lower().endswith('.zip'):
@@ -272,18 +274,22 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization,
         if s3.Bucket(obj_storage_bucket).creation_date is None:
                 s3.create_bucket(Bucket=obj_storage_bucket)
 
-        # Before uploading a new file, empty the folder if it is not empty
+        # Before uploading a new file, empty the folder if there are files to remove
         objs = list(s3.Bucket(obj_storage_bucket).objects.filter(Prefix="mri_data/", Delimiter="/"))
         if len(list(objs))>0:
             for obj in objs:
-                s3.Bucket(obj_storage_bucket).objects.filter(Prefix=obj.key).delete()
+                time_threshold = datetime.datetime.now(pytz.UTC) - datetime.timedelta(hours=12)
+                if obj.last_modified < time_threshold:
+                    s3.Bucket(obj_storage_bucket).objects.filter(Prefix=obj.key).delete()
 
         # Upload a provided file
         file_name = upload_mri_file.filename
         # Remove any special character from the file_name
         file_name = re.sub(r'[^a-zA-Z0-9_]', '_', os.path.splitext(file_name)[0]) + ".zip"
-        filename = os.path.splitext(file_name)[0] + ".tmp.part"
+        ts = round(time.time()*1000)
+        filename = os.path.splitext(file_name)[0] + "_" + str(ts) + ".tmp.part"
         obj_name = "mri_data/" + filename
+        exchange_data_info["filename"] = obj_name
         file_content = upload_mri_file.read()
         s3.Bucket(obj_storage_bucket).upload_fileobj(BytesIO(file_content), obj_name, ExtraArgs={'ContentType': "application/zip"})
 
