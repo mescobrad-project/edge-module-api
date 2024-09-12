@@ -149,7 +149,7 @@ def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
                           "workspace_id": workspace_id,
                           "metadata_json_file": upload_metadata_json_file.read() if upload_metadata_json_file is not None else None}
     # Init client
-    CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
+    CONF_FILE_PATH = 'mescobrad_edge/config/edge_module.config'
     PLUGIN_CONF_MAIN_SECTION = 'edge-module-configuration'
     config = configparser.ConfigParser()
     config.read(CONF_FILE_PATH)
@@ -255,7 +255,7 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization,
                           "upload_anonymized_and_defaced_data": upload_anonymized_and_defaced_data}
 
     # Init client
-    CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
+    CONF_FILE_PATH = 'mescobrad_edge/config/edge_module.config'
     PLUGIN_CONF_MAIN_SECTION = 'edge-module-configuration'
     config = configparser.ConfigParser()
     config.read(CONF_FILE_PATH)
@@ -366,7 +366,7 @@ def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
                           "metadata_json_file": upload_metadata_json_file.read() if upload_metadata_json_file is not None else None}
 
     # Init client
-    CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
+    CONF_FILE_PATH = 'mescobrad_edge/config/edge_module.config'
     PLUGIN_CONF_MAIN_SECTION = 'edge-module-configuration'
     config = configparser.ConfigParser()
     config.read(CONF_FILE_PATH)
@@ -458,7 +458,7 @@ def upload_actiwatch_actigraphy_data(upload_actigraphy_file, workspace_id,
                           "metadata_json_file": upload_metadata_json_file.read() if upload_metadata_json_file is not None else None}
 
     # Init client
-    CONF_FILE_PATH = 'mescobrad_edge/edge_module.config'
+    CONF_FILE_PATH = 'mescobrad_edge/config/edge_module.config'
     PLUGIN_CONF_MAIN_SECTION = 'edge-module-configuration'
     config = configparser.ConfigParser()
     config.read(CONF_FILE_PATH)
