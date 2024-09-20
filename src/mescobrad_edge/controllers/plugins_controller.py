@@ -129,6 +129,8 @@ def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
     from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
     import configparser
     import re
+    import pytz
+    import time
 
     # Check if data is csv file
     if not upload_file.filename.lower().endswith('.csv'):
@@ -167,17 +169,21 @@ def upload_questionnaires_data(upload_file, trigger_anonymization, workspace_id,
     if s3.Bucket(obj_storage_bucket).creation_date is None:
             s3.create_bucket(Bucket=obj_storage_bucket)
 
-    # Before uploading a new file, empty the folder if it is not empty
+    # Before uploading a new file, empty the folder if there are files to remove
     objs = list(s3.Bucket(obj_storage_bucket).objects.filter(Prefix="csv_data/", Delimiter="/"))
     if len(list(objs))>0:
         for obj in objs:
-            s3.Bucket(obj_storage_bucket).objects.filter(Prefix=obj.key).delete()
+            time_threshold = datetime.datetime.now(pytz.UTC) - datetime.timedelta(hours=12)
+            if obj.last_modified < time_threshold:
+                s3.Bucket(obj_storage_bucket).objects.filter(Prefix=obj.key).delete()
 
     # Upload a provided file
     file_name = upload_file.filename
+    ts = round(time.time()*1000)
     # Remove any special character from the file_name
-    file_name = re.sub(r'[^a-zA-Z0-9_]', '_', os.path.splitext(file_name)[0]) + ".csv"
+    file_name = re.sub(r'[^a-zA-Z0-9_]', '_', os.path.splitext(file_name)[0]) + "_csv_" + str(ts) + ".csv"
     obj_name = "csv_data/" + file_name
+    exchange_data_info["filename"] = obj_name
     file_content = upload_file.read()
     s3.Bucket(obj_storage_bucket).upload_fileobj(BytesIO(file_content), obj_name,
                                                  ExtraArgs={'ContentType': "text/csv"})
@@ -230,7 +236,6 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization,
     """
     from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
     import configparser
-    import re
     import time
     import pytz
 
@@ -284,10 +289,8 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization,
 
         # Upload a provided file
         file_name = upload_mri_file.filename
-        # Remove any special character from the file_name
-        file_name = re.sub(r'[^a-zA-Z0-9_]', '_', os.path.splitext(file_name)[0]) + ".zip"
         ts = round(time.time()*1000)
-        filename = os.path.splitext(file_name)[0] + "_" + str(ts) + ".tmp.part"
+        filename = "mri_" + str(ts) + ".tmp.part"
         obj_name = "mri_data/" + filename
         exchange_data_info["filename"] = obj_name
         file_content = upload_mri_file.read()
@@ -344,7 +347,8 @@ def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
     """
     from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
     import configparser
-    import re
+    import time
+    import pytz
 
     # Check if data is edf file
     if not upload_edf_file.filename.lower().endswith('.edf'):
@@ -384,17 +388,20 @@ def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
     if s3.Bucket(obj_storage_bucket).creation_date is None:
             s3.create_bucket(Bucket=obj_storage_bucket)
 
-    # Before uploading a new file, empty the folder if it is not empty
+    # Before uploading a new file, empty the folder if there are files to remove
     objs = list(s3.Bucket(obj_storage_bucket).objects.filter(Prefix="edf_data_tmp/", Delimiter="/"))
     if len(list(objs))>0:
         for obj in objs:
-            s3.Bucket(obj_storage_bucket).objects.filter(Prefix=obj.key).delete()
+            time_threshold = datetime.datetime.now(pytz.UTC) - datetime.timedelta(hours=12)
+            if obj.last_modified < time_threshold:
+                s3.Bucket(obj_storage_bucket).objects.filter(Prefix=obj.key).delete()
 
     # Upload a provided file
     file_name = upload_edf_file.filename
-    # Remove any special character from the file_name
-    file_name = re.sub(r'[^a-zA-Z0-9_]', '_', os.path.splitext(file_name)[0]) + ".edf"
+    ts = round(time.time()*1000)
+    file_name = "edf_" + str(ts) + ".edf"
     obj_name = "edf_data_tmp/" + file_name
+    exchange_data_info["filename"] = obj_name
     file_content = upload_edf_file.read()
     s3.Bucket(obj_storage_bucket).upload_fileobj(BytesIO(file_content), obj_name)
 
@@ -436,7 +443,8 @@ def upload_actiwatch_actigraphy_data(upload_actigraphy_file, workspace_id,
     """
     from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
     import configparser
-    import re
+    import pytz
+    import time
 
     # Check if data is in csv file format
     if not upload_actigraphy_file.filename.lower().endswith('.csv'):
@@ -476,17 +484,20 @@ def upload_actiwatch_actigraphy_data(upload_actigraphy_file, workspace_id,
     if s3.Bucket(obj_storage_bucket).creation_date is None:
             s3.create_bucket(Bucket=obj_storage_bucket)
 
-    # Before uploading a new file, empty the folder if it is not empty
+    # Before uploading a new file, empty the folder if there are files to remove
     objs = list(s3.Bucket(obj_storage_bucket).objects.filter(Prefix="actigraphy_data_tmp/", Delimiter="/"))
     if len(list(objs))>0:
         for obj in objs:
-            s3.Bucket(obj_storage_bucket).objects.filter(Prefix=obj.key).delete()
+            time_threshold = datetime.datetime.now(pytz.UTC) - datetime.timedelta(hours=12)
+            if obj.last_modified < time_threshold:
+                s3.Bucket(obj_storage_bucket).objects.filter(Prefix=obj.key).delete()
 
     # Upload a provided file
     file_name = upload_actigraphy_file.filename
-    # Remove any special character from the file_name
-    file_name = re.sub(r'[^a-zA-Z0-9_]', '_', os.path.splitext(file_name)[0]) + ".csv"
+    ts = round(time.time()*1000)
+    file_name = "actigraphy_" + str(ts) + ".csv"
     obj_name = "actigraphy_data_tmp/" + file_name
+    exchange_data_info["filename"] = obj_name
     file_content = upload_actigraphy_file.read()
     s3.Bucket(obj_storage_bucket).upload_fileobj(BytesIO(file_content), obj_name)
 
