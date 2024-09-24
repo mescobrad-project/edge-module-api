@@ -236,6 +236,7 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization,
     """
     from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
     import configparser
+    import re
     import time
     import pytz
 
@@ -289,8 +290,16 @@ def upload_mri_data(upload_mri_file, deface_method, trigger_anonymization,
 
         # Upload a provided file
         file_name = upload_mri_file.filename
+        basename = os.path.splitext(file_name)[0]
+        if clinical_id is not None:
+            basename_processed = basename.replace(clinical_id, '')
+        else:
+            basename_processed = basename
+        basename_processed = re.sub(r'[^a-zA-Z0-9_]', '_', basename_processed)
         ts = round(time.time()*1000)
-        filename = "mri_" + str(ts) + ".tmp.part"
+        filename = basename_processed + "_mri_" + str(ts) + ".tmp.part"
+        if file_name.startswith('_'):
+            file_name = file_name[1:]
         obj_name = "mri_data/" + filename
         exchange_data_info["filename"] = obj_name
         file_content = upload_mri_file.read()
@@ -347,6 +356,7 @@ def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
     """
     from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
     import configparser
+    import re
     import time
     import pytz
 
@@ -398,8 +408,16 @@ def upload_edf_data(upload_edf_file, trigger_anonymization, workspace_id,
 
     # Upload a provided file
     file_name = upload_edf_file.filename
+    basename = os.path.splitext(file_name)[0]
+    if clinical_id is not None:
+        basename_processed = basename.replace(clinical_id, '')
+    else:
+        basename_processed = basename
+    basename_processed = re.sub(r'[^a-zA-Z0-9_]', '_', basename_processed)
     ts = round(time.time()*1000)
-    file_name = "edf_" + str(ts) + ".edf"
+    file_name = basename_processed + "_edf_" + str(ts) + ".edf"
+    if file_name.startswith('_'):
+        file_name = file_name[1:]
     obj_name = "edf_data_tmp/" + file_name
     exchange_data_info["filename"] = obj_name
     file_content = upload_edf_file.read()
@@ -443,6 +461,7 @@ def upload_actiwatch_actigraphy_data(upload_actigraphy_file, workspace_id,
     """
     from mescobrad_edge.workflow_engine.workflow_engine import WorkflowEngine
     import configparser
+    import re
     import pytz
     import time
 
@@ -494,8 +513,16 @@ def upload_actiwatch_actigraphy_data(upload_actigraphy_file, workspace_id,
 
     # Upload a provided file
     file_name = upload_actigraphy_file.filename
+    basename = os.path.splitext(file_name)[0]
+    if clinical_id is not None:
+        basename_processed = basename.replace(clinical_id, '')
+    else:
+        basename_processed = basename
+    basename_processed = re.sub(r'[^a-zA-Z0-9_]', '_', basename_processed)
     ts = round(time.time()*1000)
-    file_name = "actigraphy_" + str(ts) + ".csv"
+    file_name = basename_processed + "_actigraphy_" + str(ts) + ".csv"
+    if file_name.startswith('_'):
+        file_name = file_name[1:]
     obj_name = "actigraphy_data_tmp/" + file_name
     exchange_data_info["filename"] = obj_name
     file_content = upload_actigraphy_file.read()
